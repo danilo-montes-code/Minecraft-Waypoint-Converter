@@ -26,6 +26,8 @@ class TxtFile(FileExtension):
         opens the file and returns its data
     write(data):
         writes data to file
+    print():
+        opens the file and prints the data
     """
 
     def __init__(self, fn: str) -> None:
@@ -96,3 +98,12 @@ class TxtFile(FileExtension):
 
         finally:
             return saved
+        
+    
+    def print(self) -> None:
+        """
+        Opens the text file and prints the data.
+        """
+        
+        data = self.read()
+        print(data)

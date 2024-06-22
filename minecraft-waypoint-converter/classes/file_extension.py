@@ -54,3 +54,10 @@ class FileExtension(ABC):
         Writes to the file.
         """
         pass
+
+    @abstractmethod
+    def print(self) -> None:
+        """
+        Opens the file and prints the data held within.
+        """
+        pass

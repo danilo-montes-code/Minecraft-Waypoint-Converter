@@ -21,12 +21,11 @@ def get_waypoints_lunar() -> None:
         'waypoints.json'
     )
 
-    lunar_waypoints_file = WaypointsLunar(
+    lunar_waypoints = WaypointsLunar(
         file_path=file_path, 
         extension=JSONFile
     )
-    lunar_waypoints : dict = lunar_waypoints_file.read()
-    print(json.dumps(lunar_waypoints, indent=2))
+    lunar_waypoints.print()
     
 
 

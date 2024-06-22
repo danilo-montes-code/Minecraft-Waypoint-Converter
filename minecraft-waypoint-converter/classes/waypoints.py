@@ -18,3 +18,7 @@ class Waypoints(ABC):
     @abstractmethod
     def write(self, data : Any) -> Any:
         pass
+
+    @abstractmethod
+    def print(self) -> None:
+        pass

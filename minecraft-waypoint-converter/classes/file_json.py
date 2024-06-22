@@ -27,6 +27,8 @@ class JSONFile(FileExtension):
         opens the file and returns its data
     write(data):
         writes data to file
+    print():
+        opens the file and prints the data
     """
 
     def __init__(self, fn: str) -> None:
@@ -97,3 +99,8 @@ class JSONFile(FileExtension):
 
         finally:
             return saved
+        
+
+    def print(self) -> None:
+        data = self.read()
+        print(json.dumps(data, indent=2))

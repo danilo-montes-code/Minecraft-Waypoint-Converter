@@ -27,6 +27,8 @@ class YAMLFile(FileExtension):
         opens the file and returns its data
     write(data):
         writes data to file
+    print():
+        opens the file and prints the data
     """
 
     def __init__(self, fn: str) -> None:
@@ -99,3 +101,12 @@ class YAMLFile(FileExtension):
 
         finally:
             return saved
+        
+
+    def print(self) -> None:
+        """
+        Opens the yaml file and prints the data.
+        """
+
+        data = self.read()
+        print(data)

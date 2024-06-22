@@ -43,6 +43,8 @@ class FileHandler:
         opens file and returns its data
     write(data):
         writes to file
+    print():
+        opens file and prints its data
     """
 
     def __init__(self, 
@@ -203,3 +205,7 @@ class FileHandler:
         """
 
         return self.extention.write(data)
+    
+    
+    def print(self) -> None:
+        self.extention.print()

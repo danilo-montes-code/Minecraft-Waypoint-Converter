@@ -20,3 +20,6 @@ class WaypointsLunar(Waypoints):
     
     def write(self, data : Any) -> bool:
         return self.file.write(data)
+    
+    def print(self) -> None:
+        self.file.print()
