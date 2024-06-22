@@ -21,11 +21,23 @@ def get_waypoints_lunar() -> None:
         'waypoints.json'
     )
 
-    lunar_waypoints_file = FileHandler.existing_file(file_path, JSONFile)
+    lunar_waypoints_file = WaypointsLunar(
+        file_path=file_path, 
+        extension=JSONFile
+    )
     lunar_waypoints : dict = lunar_waypoints_file.read()
     print(json.dumps(lunar_waypoints, indent=2))
     
 
+
+def get_waypoints_xaeros() -> None:
+    file_path = os.path.join(
+        HOME_DIR, 
+        '.lunarclient', 
+        'settings', 
+        'game',
+        'waypoints.json'
+    )
 
 
 def main() -> None:
