@@ -1,6 +1,6 @@
 from classes import *
 
-import os, json
+import os, json, sys
 from pathlib import Path
 
 ########################################################################
@@ -121,11 +121,50 @@ def get_waypoints_xaeros() -> None:
 #####                            Main                              #####
 ########################################################################
 
+def determine_options() -> int:
+
+    if len(sys.argv) == 1:
+        return 0
+
+    elif len(sys.argv) == 2:
+
+        try:
+            option = int(sys.argv[1])
+            if option < 1 or option > len(sys.argv) - 1:
+                raise IndexError
+            
+            return option
+
+        except ValueError:
+            print('Given choice is not a number.\n')
+
+        except IndexError:
+            print('Given choice is not in the range of options.\n')
+
+    else:
+        print('Incorrect number of args')
+        
+    return -1
+
+
+
 def main() -> None: 
-    print(HOME_DIR)
-    print(APP_DATA)
-    get_waypoints_lunar()
-    get_waypoints_xaeros()
+    option = determine_options()
+
+    if option == -1:
+        return
+    
+    # default, no args
+    if option == 0:
+
+        print(HOME_DIR)
+        print(APP_DATA)
+        get_waypoints_xaeros()
+
+    elif option == 1:
+        get_waypoints_lunar()
+
+    return
 
 
 
