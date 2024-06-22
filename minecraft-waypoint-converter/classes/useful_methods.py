@@ -70,7 +70,38 @@ def print_internal(text: Any, display_error_notice: bool=False) -> None:
     return
 
 
-
 def save_log(filename: str, data: Any) -> None:
     with open(filename, 'a+', encoding="utf-8") as f:
         f.write(str(data))
+
+
+def prompt_for_answer(prompt_text : str) -> str:
+    answer = input(f'> {prompt_text}: ').strip()
+
+    while not answer:
+        print('Please enter a valid string.')
+        answer = input(f'> {prompt_text}: ').strip()
+
+    return answer
+
+
+def select_list_options(options : list[str]) -> int:
+
+    for i, option in enumerate(options):
+        print(f'({i + 1}) {option}')
+
+    try:
+        choice = int(input('] '))
+
+        if choice < 1 or choice > len(options):
+            raise IndexError
+        
+        return choice
+
+    except ValueError:
+        print('Given choice is not a number.\n')
+        return select_list_options(options)
+    
+    except IndexError:
+        print('Given choice is not in the range of options.\n')
+        return select_list_options(options)

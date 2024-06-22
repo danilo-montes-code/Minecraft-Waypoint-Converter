@@ -102,5 +102,9 @@ class JSONFile(FileExtension):
         
 
     def print(self) -> None:
+        """
+        Opens the json file and prints the data.
+        """
+        
         data = self.read()
         print(json.dumps(data, indent=2))
