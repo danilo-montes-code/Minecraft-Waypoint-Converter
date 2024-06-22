@@ -45,9 +45,11 @@ class FileHandler:
         writes to file
     """
 
-    def __init__(self, fn: str, 
-                 extension: Type[FileExtension], 
-                 dir: str='data') -> None:
+    def __init__(self, 
+                 fn : str = '', 
+                 extension : Type[FileExtension] = None, 
+                 dir : str = 'data',
+                 full_path : str = None) -> None:
         """
         Creates FileHandler instance.
 
@@ -61,13 +63,22 @@ class FileHandler:
             directory to put files in
         """
 
-        self.path = os.path.join(SCRIPT_ROOT, dir, fn)
+        self.path = full_path or os.path.join(SCRIPT_ROOT, dir, fn)
         self.extention = extension(self.path)
         if not self.file_exists():
             if self.create_file():
                 print_internal(f'{self.path} created successfully')
             else:
                 print_internal(f'error creating file {self.path}')
+
+
+
+    @classmethod
+    def existing_file(cls, 
+                      full_path : str, 
+                      extension : Type[FileExtension]):
+        return cls(extension=extension, full_path=full_path)
+
 
 
     @staticmethod

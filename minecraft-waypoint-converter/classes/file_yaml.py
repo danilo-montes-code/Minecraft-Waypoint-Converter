@@ -4,7 +4,7 @@ Contains a class that handles  YAML file IO.
 """
 
 # python native
-import yaml
+from ruamel.yaml import YAML
 from typing import Any
 
 # in project
@@ -56,7 +56,8 @@ class YAMLFile(FileExtension):
         data = None
         try:
             with open(self.fn, 'r') as f:
-                data = yaml.safe_load(f)
+                yaml = YAML(typ='safe')
+                data = yaml.load(f)
 
         except IOError as e:
             handle_error(e, 'YAMLFile.open()',
@@ -89,6 +90,7 @@ class YAMLFile(FileExtension):
         saved = False
         try: 
             with open(self.fn, 'w') as f:
+                yaml = YAML()
                 yaml.dump(data, f)
                 saved = True
         
