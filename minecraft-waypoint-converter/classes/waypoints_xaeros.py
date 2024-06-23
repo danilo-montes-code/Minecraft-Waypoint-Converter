@@ -21,3 +21,6 @@ class WaypointsXaeros(Waypoints):
 
     def print(self) -> None:
         self.file.print()
+
+    def get_worlds(self) -> list[str]:
+        pass

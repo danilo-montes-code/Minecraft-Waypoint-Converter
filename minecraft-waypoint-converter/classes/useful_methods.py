@@ -70,6 +70,20 @@ def print_internal(text: Any, display_error_notice: bool=False) -> None:
     return
 
 
+def print_script_message(text : str) -> None:
+    """
+    Prints a message with a >, indicating a message from the script.
+
+    Parameters
+    ----------
+    text : str
+        the data to display
+    """
+
+    print(f'> {text}')
+    return
+
+
 def save_log(filename: str, data: Any) -> None:
     with open(filename, 'a+', encoding="utf-8") as f:
         f.write(str(data))

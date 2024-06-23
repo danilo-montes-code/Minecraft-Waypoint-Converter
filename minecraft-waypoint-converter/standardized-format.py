@@ -10,6 +10,16 @@ from pathlib import Path
 HOME_DIR = Path.home()
 APP_DATA = Path(os.getenv('APPDATA'))
 
+LUNAR_FILE = WaypointsLunar(
+    file_path = os.path.join(
+        HOME_DIR, 
+        '.lunarclient', 
+        'settings', 
+        'game',
+        'waypoints.json'
+    )
+) or None
+# XAERO_DIR = 
 
 
 ########################################################################
@@ -18,18 +28,50 @@ APP_DATA = Path(os.getenv('APPDATA'))
 
 def get_waypoints_lunar() -> None:
 
-    waypoint_file_path = os.path.join(
-        HOME_DIR, 
-        '.lunarclient', 
-        'settings', 
-        'game',
-        'waypoints.json'
-    )
+    LUNAR_FILE.print()
 
-    lunar_waypoints = WaypointsLunar(
-        file_path=waypoint_file_path
-    )
-    lunar_waypoints.print()
+    '''
+    Lunar Client waypoint file attributes
+
+    - all waypoints in single file
+    - JSON
+
+    {
+        "version" : int,
+        "waypoints" : {
+            "sp:worldName OR mp:serverName" : {
+                "" : {
+                    "waypointName" : {
+                        "location" {
+                            "x" : int,
+                            "y" : int,
+                            "z" : int
+                        },
+                        "visible" : bool,
+                        "dimension" : int,
+                        "color" : {
+                            "value" : int,
+                            "chroma" : bool (only if true),
+                            "chromaSpeed" : "int" (only if not default),
+                            "chromaType" : str (only if "shift")
+                        },
+                        "showBeam" : bool,
+                        "showText" : bool
+                    }
+                }
+            }
+        }
+    }
+    
+    world tags
+        "sp:worldName" - singleplayer
+        "mp:serverName" - multiplayer
+
+    dimension tag (same for xaeros)
+        -1 - nether
+        0 - overworld
+        1 - end
+    '''
     
 
 
@@ -54,8 +96,8 @@ def get_waypoints_xaeros() -> None:
 
     def choose_server(server_paths : list[str]) -> str:
 
-        print('> Multiple servers were found that include the given name.')
-        print('> Please select the number of the desired server.')
+        print_script_message('Multiple servers were found that include the given name.')
+        print_script_message('Please select the number of the desired server.')
 
         server_choice : int = select_list_options(server_paths)
 
@@ -77,8 +119,8 @@ def get_waypoints_xaeros() -> None:
     matching_servers = search_for_server_waypoints(server_name)
 
     while len(matching_servers) == 0:
-        print(f'> No servers with the name "{server_name}" were found.')
-        print('> Please enter a valid server name\n')
+        print_script_message(f'No servers with the name "{server_name}" were found.')
+        print_script_message('Please enter a valid server name\n')
 
         server_name = prompt_for_answer(
             'What is the name of the singleplayer world or multiplayer server IP?' \
@@ -117,11 +159,62 @@ def get_waypoints_xaeros() -> None:
 
 
 
+
+########################################################################
+#####                    Get World/Server Info                     #####
+########################################################################
+
+def get_world_name() -> str:
+
+    return prompt_for_answer(
+        'What is the name of the singleplayer world or multiplayer server IP?' \
+        ' (Only part of the name is necessary,' \
+        ' ex. "best" will find "best world")'
+    )
+
+
+def get_mod_names(mod_names : tuple[str]) -> tuple[str]:
+
+    print_script_message('Select the mod to convert from: ')
+    from_mod : str = mod_names[select_list_options(mod_names) - 1]
+
+    print_script_message('Select the mod to convert to: ')
+    to_mod : str = mod_names[select_list_options(mod_names) - 1]
+
+    return from_mod, to_mod
+    
+
+def verify_world_in_mod_dir(
+        world_name : str, 
+        mod_name : str,
+    ) -> bool:
+    """
+    
+    Parameters
+    ----------
+
+    Returns
+    -------
+    
+    """
+
+    # from mod_name, get proper directory/file
+
+
+    # get list of world/server names in said location
+
+    # iterate through and return true if world_name is found
+
+    # return false, if world_name was not found
+    pass
+
+
+
 ########################################################################
 #####                            Main                              #####
 ########################################################################
 
-def determine_options() -> int:
+def determine_options(number_max : int) -> int:
 
     if len(sys.argv) == 1:
         return 0
@@ -130,7 +223,7 @@ def determine_options() -> int:
 
         try:
             option = int(sys.argv[1])
-            if option < 1 or option > len(sys.argv) - 1:
+            if option < 1 or option > number_max:
                 raise IndexError
             
             return option
@@ -147,22 +240,50 @@ def determine_options() -> int:
     return -1
 
 
-
 def main() -> None: 
-    option = determine_options()
+
+    option = determine_options(2)
 
     if option == -1:
         return
     
     # default, no args
     if option == 0:
+        # get world/server name
+        world_name = get_world_name()
 
+        # get convert from and to mod names
+        from_mod, to_mod = get_mod_names((
+            'lunar client',
+            'xaero\'s minimap'
+        ))
+
+        # verify world/server name in both from and to mods
+        world_in_from_mod = verify_world_in_mod_dir(world_name, from_mod)
+        world_in_to_mod = verify_world_in_mod_dir(world_name, to_mod)
+
+        # if not in to/from mod, notify and prompt for if name is different?
+        # or just terminate program idk
+
+        # convert from to
+        
+
+    elif option == 1:
+        get_waypoints_lunar()
+
+    elif option == 2:
+        print(LUNAR_FILE.get_world_waypoints(world_name="kidnamedsoub"))
+
+    elif option == 10:
         print(HOME_DIR)
         print(APP_DATA)
         get_waypoints_xaeros()
 
-    elif option == 1:
-        get_waypoints_lunar()
+
+    # TODO cmd line args for FROM TO formats
+    # ex py ... .py lunar xaeros
+
+    
 
     return
 
