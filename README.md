@@ -1,4 +1,4 @@
-# Minecraft-Waypoint-Converter
+# Minecraft Waypoint Converter
 Converts waypoints between various Minecraft waypoint mods.
 
 Uses YAML as the standardized format
@@ -22,3 +22,12 @@ Uses YAML as the standardized format
 
 ### Xaero's Minimap
 - Name waypoint
+
+
+
+# Planned Features
+__v2__
+- Additional world name choosing option: singleplayer worlds and multiplayer servers are polled and presented as options
+
+__v3__
+- GUI to make use more user accessible

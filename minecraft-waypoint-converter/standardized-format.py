@@ -69,8 +69,8 @@ def get_waypoints_lunar() -> None:
 
     dimension tag (same for xaeros)
         -1 - nether
-        0 - overworld
-        1 - end
+        0  - overworld
+        1  - end
     '''
     
 
@@ -160,6 +160,18 @@ def get_waypoints_xaeros() -> None:
 
 
 
+
+
+
+########################################################################
+#####                         Conversion                           #####
+########################################################################
+
+def convert_waypoints(from_mod, to_mod, world_name):
+    pass
+
+
+
 ########################################################################
 #####                    Get World/Server Info                     #####
 ########################################################################
@@ -173,13 +185,13 @@ def get_world_name() -> str:
     )
 
 
-def get_mod_names(mod_names : tuple[str]) -> tuple[str]:
+def get_mod_names(mod_options : tuple[str]) -> tuple[str]:
 
     print_script_message('Select the mod to convert from: ')
-    from_mod : str = mod_names[select_list_options(mod_names) - 1]
+    from_mod : str = mod_options[select_list_options(mod_options) - 1]
 
     print_script_message('Select the mod to convert to: ')
-    to_mod : str = mod_names[select_list_options(mod_names) - 1]
+    to_mod : str = mod_options[select_list_options(mod_options) - 1]
 
     return from_mod, to_mod
     
@@ -242,31 +254,43 @@ def determine_options(number_max : int) -> int:
 
 def main() -> None: 
 
-    option = determine_options(2)
+    option = determine_options(3)
 
     if option == -1:
         return
     
     # default, no args
     if option == 0:
+
         # get world/server name
         world_name = get_world_name()
 
         # get convert from and to mod names
-        from_mod, to_mod = get_mod_names((
+        from_mod, to_mod = get_mod_names(mod_options=(
             'lunar client',
             'xaero\'s minimap'
         ))
 
         # verify world/server name in both from and to mods
         world_in_from_mod = verify_world_in_mod_dir(world_name, from_mod)
-        world_in_to_mod = verify_world_in_mod_dir(world_name, to_mod)
+        world_in_to_mod   = verify_world_in_mod_dir(world_name, to_mod)
 
-        # if not in to/from mod, notify and prompt for if name is different?
-        # or just terminate program idk
+        if not world_in_from_mod or not world_in_to_mod:
+            print(
+                f'Given world not in {from_mod}'
+            ) if not world_in_from_mod \
+            else print(
+                f'Given world not in {to_mod}'
+            )
 
         # convert from to
+        convert_waypoints(from_mod, to_mod, world_name)
         
+        
+
+
+
+
 
     elif option == 1:
         get_waypoints_lunar()
@@ -274,7 +298,7 @@ def main() -> None:
     elif option == 2:
         print(LUNAR_FILE.get_world_waypoints(world_name="kidnamedsoub"))
 
-    elif option == 10:
+    elif option == 3:
         print(HOME_DIR)
         print(APP_DATA)
         get_waypoints_xaeros()
