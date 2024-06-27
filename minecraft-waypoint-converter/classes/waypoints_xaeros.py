@@ -1,3 +1,10 @@
+"""waypoints_xaeros.py
+
+Contains a class that represents a set of waypoints set in the mod
+Xaero's Minimap.
+"""
+
+
 from .file_extension import FileExtension
 from .file_txt import TxtFile
 from .waypoints import Waypoints

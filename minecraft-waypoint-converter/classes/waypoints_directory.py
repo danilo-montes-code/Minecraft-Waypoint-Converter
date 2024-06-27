@@ -1,4 +1,11 @@
-from .file_handler import FileHandler
+"""waypoints_directory.py
+
+Contains a class that represents a set of waypoints from a mod that uses
+a directory as its storage method.
+Class is written as an abstract class.
+"""
+
+
 from .file_extension import FileExtension
 from .waypoints import Waypoints
 

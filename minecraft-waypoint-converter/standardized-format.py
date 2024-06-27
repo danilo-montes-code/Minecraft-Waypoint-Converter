@@ -1,3 +1,13 @@
+"""
+Minecraft Waypoint Converter
+
+Converts Minecraft waypoints between various mods. 
+
+Dependencies:
+* ruamel.yaml
+"""
+
+
 from classes import *
 
 import os, json, sys

@@ -1,3 +1,10 @@
+"""waypoints_lunar.py
+
+Contains a class that represents a set of waypoints set in 
+Lunar Client.
+"""
+
+
 from .file_json import JSONFile
 from .waypoints_file import FileWaypoints
 from .useful_methods import (print_script_message, 
@@ -9,14 +16,6 @@ from typing import Any
 
 
 class WaypointsLunar(FileWaypoints):
-    """
-    
-    Attributes
-    ----------
-    waypoints_file : FileHandler
-
-    waypoints : dict
-    """
 
     def __init__(self,
                  file_path : str) -> None:
