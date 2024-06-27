@@ -20,7 +20,7 @@ from pathlib import Path
 HOME_DIR = Path.home()
 APP_DATA = Path(os.getenv('APPDATA'))
 
-LUNAR_FILE = WaypointsLunar(
+LUNAR_FILE = LunarWaypointsHandler(
     file_path = os.path.join(
         HOME_DIR, 
         '.lunarclient', 
@@ -306,7 +306,12 @@ def main() -> None:
         get_waypoints_lunar()
 
     elif option == 2:
-        print(LUNAR_FILE.get_world_waypoints(world_name="kidnamedsoub"))
+        print(
+            json.dumps(
+                LUNAR_FILE.get_world_waypoints(world_name="kidnamedsoub"), 
+                indent=2
+            )
+        )
 
     elif option == 3:
         print(HOME_DIR)

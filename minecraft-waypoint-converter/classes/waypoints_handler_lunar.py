@@ -1,12 +1,12 @@
-"""waypoints_lunar.py
+"""waypoints_handler_lunar.py
 
-Contains a class that represents a set of waypoints set in 
-Lunar Client.
+Contains a class that handles reading and writing waypoints to and from
+Lunar Client's waypoint mod.
 """
 
 
 from .file_json import JSONFile
-from .waypoints_file import FileWaypoints
+from .waypoints_file_mod_handler import FileWaypointsModHandler
 from .useful_methods import (print_script_message, 
                              prompt_for_answer, 
                              select_list_options)
@@ -15,7 +15,17 @@ from typing import Any
 
 
 
-class WaypointsLunar(FileWaypoints):
+class LunarWaypointsHandler(FileWaypointsModHandler):
+    """
+    A class that represents a set of waypoints for the Lunar Client
+    waypoints mod.
+
+    Attributes
+    ----------
+    waypoints_file : FileHandler
+        class that handles IO for the file in which the waypoints
+        are stored
+    """
 
     def __init__(self,
                  file_path : str) -> None:
@@ -115,6 +125,7 @@ class WaypointsLunar(FileWaypoints):
     
 
     def write(self, data : Any) -> bool:
+        # convert from YAML standard format to Lunar format
         return self.waypoints_file.write(data)
     
 

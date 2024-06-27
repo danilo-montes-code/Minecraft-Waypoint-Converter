@@ -1,21 +1,21 @@
-"""waypoints_file.py
+"""waypoints_file_mod_handler.py
 
-Contains a class that represents a set of waypoints from a mod that uses
-a single file as its storage method.
+Contains a class that handles reading and writing waypoints to and from
+a waypoint mod that stores all waypoints in a single file.
 Class is written as an abstract class.
 """
 
 
 from .file_handler import FileHandler
 from .file_extension import FileExtension
-from .waypoints import Waypoints
+from .waypoints_mod_handler import WaypointsModHandler
 
 from abc import abstractmethod
 from typing import Any
 
-class FileWaypoints(Waypoints):
+class FileWaypointsModHandler(WaypointsModHandler):
     """
-    A class that represents a set of waypoints in a world for a mod that
+    A class that represents a set of waypoints for a mod that
     stores all world and server waypoints in a single file.
 
     Attributes
@@ -29,7 +29,7 @@ class FileWaypoints(Waypoints):
                  file_path : str,
                  extension : FileExtension) -> None:
         """
-        Creates an instance of a FileWaypoints subclass.
+        Creates an instance of a FileWaypointsModHandler subclass.
         """
         self.waypoints_file = FileHandler(
             full_path=file_path, 

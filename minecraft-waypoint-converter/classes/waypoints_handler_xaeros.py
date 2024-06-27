@@ -1,19 +1,19 @@
-"""waypoints_xaeros.py
+"""waypoints_handler_xaeros.py
 
-Contains a class that represents a set of waypoints set in the mod
-Xaero's Minimap.
+Contains a class that handles reading and writing waypoints to and from
+Xaero's Minimap mod.
 """
 
 
 from .file_extension import FileExtension
 from .file_txt import TxtFile
-from .waypoints import Waypoints
+from .waypoints_mod_handler import WaypointsModHandler
 
 from typing import Type, Any
 
 
 
-class WaypointsXaeros(Waypoints):
+class XaerosWaypointsHandler(WaypointsModHandler):
 
     def __init__(self,
                  file_path : str) -> None:

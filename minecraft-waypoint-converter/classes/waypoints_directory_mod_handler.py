@@ -1,18 +1,18 @@
-"""waypoints_directory.py
+"""waypoints_directory_mod_handler.py
 
-Contains a class that represents a set of waypoints from a mod that uses
-a directory as its storage method.
+Contains a class that handles reading and writing waypoints to and from
+a waypoint mod that stores all waypoints in multiple directories.
 Class is written as an abstract class.
 """
 
 
 from .file_extension import FileExtension
-from .waypoints import Waypoints
+from .waypoints_mod_handler import WaypointsModHandler
 
 from abc import abstractmethod
 from typing import Any
 
-class DirectoryWaypoints(Waypoints):
+class DirectoryWaypointsModHandler(WaypointsModHandler):
 
     def __init__(self,
                  base_directory_path : str,

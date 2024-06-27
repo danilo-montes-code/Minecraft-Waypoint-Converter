@@ -1,6 +1,7 @@
-"""waypoints.py
+"""waypoints_mod_handler.py
 
-Contains a class that represents a set of waypoints in a world.
+Contains a class that hanldes reading and writing waypoints to and from
+a waypoint mod.
 Class is written as an abstract class.
 """
 
@@ -8,19 +9,19 @@ Class is written as an abstract class.
 from abc import ABC, abstractmethod
 from typing import Any
 
-class Waypoints(ABC):
+class WaypointsModHandler(ABC):
     """
     A class that represents a set of waypoints in a world.
 
     Attributes
     ----------
     waypoints : list[dict]
-        the list of all the waypoints in the world/server
+        the list of all the waypoints in the world/server 
     """
 
     def __init__(self) -> None: 
         """
-        Creates an instance of a Waypoints subclass.
+        Creates an instance of a WaypointsModHandler subclass.
         """
         self.waypoints = []
 
