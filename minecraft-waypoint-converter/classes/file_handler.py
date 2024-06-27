@@ -48,9 +48,9 @@ class FileHandler:
     """
 
     def __init__(self, 
-                 fn : str = '', 
-                 extension : Type[FileExtension] = None, 
+                 fn : str, 
                  dir : str = 'data',
+                 extension : FileExtension = None, 
                  full_path : str = None) -> None:
         """
         Creates FileHandler instance.
@@ -76,9 +76,9 @@ class FileHandler:
 
 
     @classmethod
-    def existing_file(cls, 
+    def exact_path(cls,
                       full_path : str, 
-                      extension : Type[FileExtension]):
+                      extension : FileExtension):
         return cls(extension=extension, full_path=full_path)
 
 

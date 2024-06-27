@@ -1,17 +1,21 @@
 """waypoints_mod_handler.py
 
-Contains a class that hanldes reading and writing waypoints to and from
+Contains a class that handles reading and writing waypoints to and from
 a waypoint mod.
 Class is written as an abstract class.
 """
 
 
+
 from abc import ABC, abstractmethod
 from typing import Any
 
+
+
 class WaypointsModHandler(ABC):
     """
-    A class that represents a set of waypoints in a world.
+    A class that handles reading and writing waypoints to and from
+    a waypoint mod.
 
     Attributes
     ----------
@@ -25,6 +29,11 @@ class WaypointsModHandler(ABC):
         """
         self.waypoints = []
 
+
+
+    ####################################################################
+    #####                     Reading Methods                      #####
+    ####################################################################
 
     @abstractmethod
     def get_worlds(self) -> list[str]:
@@ -62,31 +71,6 @@ class WaypointsModHandler(ABC):
         list[dict]
             a list of a world's waypoints' generalized data that all 
             waypoint mods share
-        """
-        
-
-    @abstractmethod
-    def add_world_waypoints(self, 
-                            world_name : str,
-                            waypoints : list[dict]) -> bool:
-        """
-        Adds the given waypoints to the given world's waypoint list.
-        Options for features that are specific to individual mods are
-        not given any values, so they are left as default in class
-        implementations of waypoint creation.
-
-        Parameters
-        ----------
-        world_name : str
-            the name of the world/server to add waypoints to
-        waypoints : list[dict]
-            the waypoints to add to the world/server
-
-        Returns
-        -------
-        bool
-            True,   if the waypoints were added successfully
-            False,  otherwise
         """
 
 
@@ -161,4 +145,34 @@ class WaypointsModHandler(ABC):
         -------
         str
             the file system name of the chosen world
+        """
+
+
+
+    ####################################################################
+    #####                     Writing Methods                      #####
+    ####################################################################
+
+    @abstractmethod
+    def add_world_waypoints(self, 
+                            world_name : str,
+                            waypoints : list[dict]) -> bool:
+        """
+        Adds the given waypoints to the given world's waypoint list.
+        Options for features that are specific to individual mods are
+        not given any values, so they are left as default in class
+        implementations of waypoint creation.
+
+        Parameters
+        ----------
+        world_name : str
+            the name of the world/server to add waypoints to
+        waypoints : list[dict]
+            the waypoints to add to the world/server
+
+        Returns
+        -------
+        bool
+            True,   if the waypoints were added successfully
+            False,  otherwise
         """

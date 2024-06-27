@@ -5,8 +5,8 @@ Lunar Client's waypoint mod.
 """
 
 
-from .file_json import JSONFile
 from .waypoints_file_mod_handler import FileWaypointsModHandler
+from .file_json import JSONFile
 from .useful_methods import (print_script_message, 
                              prompt_for_answer, 
                              select_list_options)
@@ -23,12 +23,21 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
     Attributes
     ----------
     waypoints_file : FileHandler
-        class that handles IO for the file in which the waypoints
-        are stored
+        class that handles IO for the file in which Lunar Client stores
+        its waypoints
     """
 
     def __init__(self,
                  file_path : str) -> None:
+        """
+        Creates an instance of LunarWaypointsHandler.
+
+        Parameters
+        ----------
+        file_path : str
+            the path to the file where Lunar Client stores its waypoints
+        """
+
         super().__init__(file_path=file_path, extension=JSONFile)
         data : dict = self.waypoints_file.read()
         self.waypoint_list : dict = data['waypoints']

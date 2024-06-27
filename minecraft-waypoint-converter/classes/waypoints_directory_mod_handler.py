@@ -13,6 +13,14 @@ from abc import abstractmethod
 from typing import Any
 
 class DirectoryWaypointsModHandler(WaypointsModHandler):
+    """
+    A class that handles reading and writing waypoints to and from
+    a waypoint mod that stores all waypoints in multiple directories.
+
+    Attributes
+    ----------
+    
+    """
 
     def __init__(self,
                  base_directory_path : str,
