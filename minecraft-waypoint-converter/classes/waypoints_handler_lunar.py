@@ -12,6 +12,8 @@ from .useful_methods import (print_script_message,
                              select_list_options)
 
 from typing import Any
+import os
+from pathlib import Path
 
 
 
@@ -28,7 +30,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
     """
 
     def __init__(self,
-                 file_path : str) -> None:
+                 different_file_path : str = None) -> None:
         """
         Creates an instance of LunarWaypointsHandler.
 
@@ -37,10 +39,28 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         file_path : str
             the path to the file where Lunar Client stores its waypoints
         """
+        if not different_file_path:
+            super().__init__(
+                file_path = os.path.join(
+                    Path.home(), 
+                    '.lunarclient', 
+                    'settings', 
+                    'game',
+                    'waypoints.json'
+                ), 
+                extension=JSONFile
+            )
 
-        super().__init__(file_path=file_path, extension=JSONFile)
+        else:
+            super().__init__(
+                file_path=different_file_path, 
+                extension=JSONFile
+            )
+
         data : dict = self.waypoints_file.read()
         self.waypoint_list : dict = data['waypoints']
+
+
 
     ####################################################################
     #####                   Waypoints Overrides                    #####

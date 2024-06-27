@@ -41,7 +41,7 @@ class JSONFile(FileExtension):
             filename of the desired file
         """
 
-        super().__init__(fn)
+        super().__init__(fn = fn, extension_suffix = '.json')
 
 
     def read(self) -> Any | None:

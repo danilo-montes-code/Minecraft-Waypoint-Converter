@@ -20,15 +20,7 @@ from pathlib import Path
 HOME_DIR = Path.home()
 APP_DATA = Path(os.getenv('APPDATA'))
 
-LUNAR_FILE = LunarWaypointsHandler(
-    file_path = os.path.join(
-        HOME_DIR, 
-        '.lunarclient', 
-        'settings', 
-        'game',
-        'waypoints.json'
-    )
-) or None
+LUNAR_FILE = LunarWaypointsHandler() or None
 # XAERO_DIR = 
 
 

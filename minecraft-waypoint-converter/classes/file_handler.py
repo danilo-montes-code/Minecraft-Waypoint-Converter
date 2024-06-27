@@ -49,8 +49,8 @@ class FileHandler:
 
     def __init__(self, 
                  fn : str, 
+                 extension : FileExtension, 
                  dir : str = 'data',
-                 extension : FileExtension = None, 
                  full_path : str = None) -> None:
         """
         Creates FileHandler instance.
@@ -63,6 +63,8 @@ class FileHandler:
             handles file IO based on extension type
         dir : str, default='data'
             directory to put files in
+        full_path : str, optional
+            entire path of the file to handle, including extension
         """
 
         self.path = full_path or os.path.join(SCRIPT_ROOT, dir, fn)
@@ -84,13 +86,13 @@ class FileHandler:
 
 
     @staticmethod
-    def create_dir(path: str = 'data') -> bool: 
+    def create_dir(dir_path : str) -> bool: 
         """
         Create directory from the root of the script.
 
         Parameters
         ----------
-        path : str
+        dir_path : str
             path of the directory to be created
 
         Returns
@@ -103,7 +105,7 @@ class FileHandler:
 
         created = False
         try:
-            Path(path).mkdir()
+            Path(dir_path).mkdir()
             created = True
 
         except FileExistsError as e:
@@ -121,6 +123,7 @@ class FileHandler:
         """
         Creates file at path specified in attribute.
 
+
         Returns
         -------
         bool
@@ -128,11 +131,10 @@ class FileHandler:
             False, otherwise
         """
 
-        val = False
+        file_created_successfully = False
         try:
-            if FileHandler.create_dir():
-                with open(self.path, 'a+'):
-                    val = True
+            with open(self.path, 'a+'):
+                file_created_successfully = True
 
         except IOError as e:
             handle_error(e, 'FileHandler.create_file()', 
@@ -143,7 +145,7 @@ class FileHandler:
                          'erroneous error creating file')
 
         finally:
-            return val
+            return file_created_successfully
         
 
     def file_exists(self) -> bool:

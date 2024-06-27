@@ -41,7 +41,7 @@ class YAMLFile(FileExtension):
             filename of the desired file
         """
 
-        super().__init__(fn)
+        super().__init__(fn = fn, extension_suffix = '.yaml')
 
 
     def read(self) -> dict | None:

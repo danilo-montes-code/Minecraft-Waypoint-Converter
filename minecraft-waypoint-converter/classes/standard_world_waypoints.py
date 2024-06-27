@@ -1,6 +1,6 @@
 """standard_world_waypoints.py
 
-Contains a class that hanldes reading and writing waypoints to and from
+Contains a class that handles reading and writing waypoints to and from
 a standardized format.
 """
 
@@ -16,7 +16,8 @@ import os
 
 class StandardWorldWaypoints():
     """
-    A class that represents a set of waypoints in a single world or server.
+    A class that handles reading and writing waypoints to and from
+    a standardized format.
 
     Attributes
     ----------
@@ -26,8 +27,6 @@ class StandardWorldWaypoints():
         indication of what type of world the world is:
         True - singleplayer,
         False - multiplayer
-    waypoints : list[dict]
-        the list of all the waypoints in the world/server
     waypoints_file : FileHandler
         class to handle the file for this world's standardized waypoints
     """
@@ -50,15 +49,16 @@ class StandardWorldWaypoints():
 
         self.world_name : str = world_name
         self.world_type : bool = world_type
-        self.waypoints : list[dict] = []
+
+
+        # Format preserved for if number of world types becomes
+        # more than just 2
+
 
         # standardized_waypoints_file_path : str = os.path.join(
         #     os.getcwd(), 'minecraft-waypoint-converter', 'data'
         # )
 
-        # Format preserved for if number of world types becomes
-        # more than just 2
-        
         # match world_type:
         #     case 0:
         #         standardized_waypoints_file_path = os.path.join(
@@ -81,16 +81,53 @@ class StandardWorldWaypoints():
         self.waypoints_file = FileHandler.exact_path(
             full_path=os.path.join(
                 standardized_waypoints_file_path,
-                world_name
+                f'{world_name}.yaml'
             ),
             extension=YAMLFile
         )
 
 
 
-    def read_waypoints(self) -> list[dict]:
+    def read_waypoints(self) -> dict:
         return self.waypoints_file.read()
 
-    def write_waypoints(self, given_waypoints : list[dict]) -> bool:
+    def write_waypoints(self, given_waypoints : dict) -> bool:
+        """
+        Writes the passed in waypoints to the file containing the
+        standardized waypoint information.
+
+        The standard dict format is outlined as follows:
+        
+        {
+            'DIMENSION_NAME_1' : {
+                'WAYPOINT_NAME_1' : {
+                    'coordinates' : {
+                        'x' : float,
+                        'y' : float,
+                        'z' : float
+                    },
+                    'color' : int,
+                    'visible : bool
+                },
+                'WAYPOINT_NAME_2' : {
+                    ...
+                }
+            },
+            'DIMENSION_NAME_2' : {
+                'WAYPOINT_NAME_3' : {
+                    ...
+                },
+                'WAYPOINT_NAME_4' : {
+                    ...
+                }
+            }
+        }
+
+
+        Parameters
+        ----------
+        given_waypoints : dict
+            properly formatted waypoints to write to the file
+        """
+
         return self.waypoints_file.write(given_waypoints)
-    

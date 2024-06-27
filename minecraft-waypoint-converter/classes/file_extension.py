@@ -18,6 +18,8 @@ class FileExtension(ABC):
     ----------
     fn : str
         filename of the file
+    extension_suffix : str
+        the suffix of the file extension
 
     Methods
     -------
@@ -27,7 +29,7 @@ class FileExtension(ABC):
         writes data to file
     """
 
-    def __init__(self, fn: str) -> None:
+    def __init__(self, fn : str, extension_suffix : str) -> None:
         """
         Creates FileExtension instance.
 
@@ -35,9 +37,13 @@ class FileExtension(ABC):
         ----------
         fn : str
             filename of the desired file
+        extension_suffix : str
+            the suffix of the file extension
         """
         
         self.fn = fn
+        self.extension_suffix = extension_suffix
+    
     
     
     @abstractmethod
@@ -61,3 +67,7 @@ class FileExtension(ABC):
         Opens the file and prints the data held within.
         """
         pass
+
+
+    def get_extension_suffix(self) -> str:
+        return self.extension_suffix

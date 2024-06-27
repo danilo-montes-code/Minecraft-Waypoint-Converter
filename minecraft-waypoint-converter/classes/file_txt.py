@@ -40,7 +40,7 @@ class TxtFile(FileExtension):
             filename of the desired file
         """
 
-        super().__init__(fn)
+        super().__init__(fn = fn, extension_suffix = '.txt')
 
 
     def read(self) -> list[str] | None:
