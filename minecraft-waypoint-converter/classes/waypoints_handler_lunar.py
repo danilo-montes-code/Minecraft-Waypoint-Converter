@@ -173,7 +173,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         return server_paths[server_choice - 1]
     
 
-    def _update_mod_waypoints(self, world_name: str, waypoints: list[str]) -> bool:
+    def _add_waypoints_to_mod(self, world_name: str, waypoints: list[str]) -> bool:
         raise NotImplementedError()
 
 

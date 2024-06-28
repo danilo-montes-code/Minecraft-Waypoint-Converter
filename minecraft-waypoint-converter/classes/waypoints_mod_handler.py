@@ -150,17 +150,8 @@ class WaypointsModHandler(ABC):
     @abstractmethod
     def convert_from_mod_to_standard(self, world_name : str) -> dict:
         """
-
-
-        The data contained has only the data
-        points that are common between all waypoint mods. These
-        attributes are:
-        - name : str
-        - coordinates : { x : float, y : float, z : float }
-        - dimension : int (-1 = nether, 0 = overworld, 1 = end)
-        - color : hex
-        - visible : bool
-
+        Converts this mod's complete waypoint data to the standardized
+        format.
 
         Returns
         -------
@@ -169,20 +160,40 @@ class WaypointsModHandler(ABC):
             data that all waypoint mods share
         """
 
-    @abstractmethod
-    def _create_standardized_dict() -> dict:
-        """
-        
-        """
 
     @abstractmethod
-    def convert_from_standard_to_mod() -> None:
+    def _create_standardized_dict(self) -> dict:
         """
-        
+        Creates the dictionary with the world's waypoints in the
+        standardized format.
+
+        Returns
+        -------
+        dict
+            the dict with the waypoint data as a standardized format
         """
 
+
     @abstractmethod
-    def _update_mod_waypoints(self) -> bool:
+    def convert_from_standard_to_mod(self, standard_data : dict) -> bool:
+        """
+        Converts the standardized format to this mod's waypoint data.
+
+        Parameters
+        ----------
+        standard_data : dict
+            the standardized waypoint data to be converted
+
+        Returns
+        -------
+        bool
+            True,   if the conversion was successful,
+            False,  otherwise
+        """
+
+
+    @abstractmethod
+    def _add_waypoints_to_mod(self) -> bool:
         """
         Adds the given waypoints to the given world's waypoint list.
         Options for features that are specific to individual mods are

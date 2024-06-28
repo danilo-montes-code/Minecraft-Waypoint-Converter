@@ -17,7 +17,36 @@ import os
 class StandardWorldWaypoints():
     """
     A class that handles reading and writing waypoints to and from
-    a standardized format.
+    a standardized format. The data is for a single world/server.
+
+    The standard format includes only waypoint data that is common
+    between all waypoint mods. The format is as follows:
+
+    {
+        'DIMENSION_NAME_1' : {
+            'WAYPOINT_NAME_1' : {
+                'coordinates' : {
+                    'x' : float,
+                    'y' : float,
+                    'z' : float
+                },
+                'color' : int,
+                'visible : bool
+            },
+            'WAYPOINT_NAME_2' : {
+                ...
+            }
+        },
+        'DIMENSION_NAME_2' : {
+            'WAYPOINT_NAME_3' : {
+                ...
+            },
+            'WAYPOINT_NAME_4' : {
+                ...
+            }
+        }
+    }
+
 
     Attributes
     ----------
@@ -89,45 +118,33 @@ class StandardWorldWaypoints():
 
 
     def read_waypoints(self) -> dict:
+        """
+        Reads the waypoints from the file and returns the dict data.
+
+        Return
+        ------
+        dict
+            the waypoint data held in the file
+        """
+        
         return self.waypoints_file.read()
+
 
     def write_waypoints(self, given_waypoints : dict) -> bool:
         """
         Writes the passed in waypoints to the file containing the
         standardized waypoint information.
 
-        The standard dict format is outlined as follows:
-        
-        {
-            'DIMENSION_NAME_1' : {
-                'WAYPOINT_NAME_1' : {
-                    'coordinates' : {
-                        'x' : float,
-                        'y' : float,
-                        'z' : float
-                    },
-                    'color' : int,
-                    'visible : bool
-                },
-                'WAYPOINT_NAME_2' : {
-                    ...
-                }
-            },
-            'DIMENSION_NAME_2' : {
-                'WAYPOINT_NAME_3' : {
-                    ...
-                },
-                'WAYPOINT_NAME_4' : {
-                    ...
-                }
-            }
-        }
-
-
         Parameters
         ----------
         given_waypoints : dict
             properly formatted waypoints to write to the file
+
+        Return
+        ------
+        bool
+            True,   if the file was successfully written to,
+            False,  otherwise
         """
 
         return self.waypoints_file.write(given_waypoints)
