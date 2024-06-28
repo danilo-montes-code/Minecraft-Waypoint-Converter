@@ -44,16 +44,15 @@ class FileWaypointsModHandler(WaypointsModHandler):
 
 
     @abstractmethod
-    def read(self) -> dict:
+    def read_waypoints(self) -> dict:
         """
-        Reads and returns the dictionary data held within 
-        the waypoints file.
+        Reads and returns the data held within the waypoints file.
         """
         
 
     @abstractmethod
     def write(self) -> None:
         """
-        Writes to the dictionary data held within the waypoints file.
+        Writes to the data held within the waypoints file.
         """
     

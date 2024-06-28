@@ -28,54 +28,6 @@ LUNAR_FILE = LunarWaypointsHandler() or None
 #####                        Get Waypoints                         #####
 ########################################################################
 
-def get_waypoints_lunar() -> None:
-
-    LUNAR_FILE.print()
-
-    '''
-    Lunar Client waypoint file attributes
-
-    - all waypoints in single file
-    - JSON
-
-    {
-        "version" : int,
-        "waypoints" : {
-            "sp:worldName OR mp:serverName" : {
-                "" : {
-                    "waypointName" : {
-                        "location" {
-                            "x" : int,
-                            "y" : int,
-                            "z" : int
-                        },
-                        "visible" : bool,
-                        "dimension" : int,
-                        "color" : {
-                            "value" : int,
-                            "chroma" : bool (only if true),
-                            "chromaSpeed" : "int" (only if not default),
-                            "chromaType" : str (only if "shift")
-                        },
-                        "showBeam" : bool,
-                        "showText" : bool
-                    }
-                }
-            }
-        }
-    }
-    
-    world tags
-        "sp:worldName" - singleplayer
-        "mp:serverName" - multiplayer
-
-    dimension tag (same for xaeros)
-        -1 - nether
-        0  - overworld
-        1  - end
-    '''
-    
-
 
 def get_waypoints_xaeros() -> None:
 
@@ -166,15 +118,6 @@ def get_waypoints_xaeros() -> None:
 
 
 ########################################################################
-#####                         Conversion                           #####
-########################################################################
-
-def convert_waypoints(from_mod, to_mod, world_name):
-    pass
-
-
-
-########################################################################
 #####                    Get World/Server Info                     #####
 ########################################################################
 
@@ -195,6 +138,13 @@ def get_mod_names(mod_options : tuple[str]) -> tuple[str]:
     print_script_message('Select the mod to convert to: ')
     to_mod : str = mod_options[select_list_options(mod_options) - 1]
 
+    if from_mod == to_mod:
+        print_script_message(
+            'The mods to export from and import to can not be the same mod. '
+            'Please select two different mods.'
+        )
+        return get_mod_names(mod_options)
+
     return from_mod, to_mod
     
 
@@ -212,15 +162,79 @@ def verify_world_in_mod_dir(
     
     """
 
-    # from mod_name, get proper directory/file
+    # from mod_name, call method for correct file
+
+    raise NotImplementedError()
 
 
-    # get list of world/server names in said location
 
-    # iterate through and return true if world_name is found
+########################################################################
+#####                         Conversion                           #####
+########################################################################
 
-    # return false, if world_name was not found
-    pass
+def convert_waypoints(
+        from_mod : str, 
+        to_mod : str, 
+        world_name : str
+    ):
+    """
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    """
+
+    # create standard_world_wps instance
+    
+    # from_mod - get waypoints of world in std mod wp format,
+    #            convert wps to standard format dict
+
+    # from_mod -> std_world_wps - save to standard yaml file
+
+    # std_world_wps -> to_mod - read from standard yaml file
+
+    # to_mod - convert wps to std mop wp format,
+    #          add wps to world in mod's files
+
+    raise NotImplementedError()
+
+
+
+########################################################################
+#####                            Driver                            #####
+########################################################################
+
+def run_driver() -> None:
+
+    # get world/server name
+    world_name = get_world_name()
+
+    # get convert from and to mod names
+    from_mod, to_mod = get_mod_names(mod_options=(
+        'lunar client',
+        'xaero\'s minimap'
+    ))
+
+    # verify world/server name in both from and to mods
+    world_in_from_mod = verify_world_in_mod_dir(world_name, from_mod)
+    world_in_to_mod   = verify_world_in_mod_dir(world_name, to_mod)
+
+    if not world_in_from_mod or not world_in_to_mod:
+        print(
+            f'Given world not in {from_mod}'
+        ) if not world_in_from_mod \
+        else print(
+            f'Given world not in {to_mod}'
+        )
+        return
+
+    # convert from to
+    convert_waypoints(from_mod, to_mod, world_name)
+
+    return
 
 
 
@@ -261,61 +275,40 @@ def main() -> None:
     if option == -1:
         return
     
-    # default, no args
+
+    # default functionality of script
     if option == 0:
-
-        # get world/server name
-        world_name = get_world_name()
-
-        # get convert from and to mod names
-        from_mod, to_mod = get_mod_names(mod_options=(
-            'lunar client',
-            'xaero\'s minimap'
-        ))
-
-        # verify world/server name in both from and to mods
-        world_in_from_mod = verify_world_in_mod_dir(world_name, from_mod)
-        world_in_to_mod   = verify_world_in_mod_dir(world_name, to_mod)
-
-        if not world_in_from_mod or not world_in_to_mod:
-            print(
-                f'Given world not in {from_mod}'
-            ) if not world_in_from_mod \
-            else print(
-                f'Given world not in {to_mod}'
-            )
-
-        # convert from to
-        convert_waypoints(from_mod, to_mod, world_name)
-        
-        
+        run_driver()
 
 
-
-
-
+    # get lunar wps file
     elif option == 1:
-        get_waypoints_lunar()
+        LUNAR_FILE.print_waypoints()
 
+
+    # get kidnamedsoub wps
     elif option == 2:
         print(
             json.dumps(
-                LUNAR_FILE.get_world_waypoints(world_name="kidnamedsoub"), 
+                LUNAR_FILE._get_world_waypoints(world_name="kidnamedsoub"), 
                 indent=2
             )
         )
 
+
+    # xaeros
     elif option == 3:
         print(HOME_DIR)
         print(APP_DATA)
         get_waypoints_xaeros()
 
 
+
+
+
     # TODO cmd line args for FROM TO formats
     # ex py ... .py lunar xaeros
-
     
-
     return
 
 

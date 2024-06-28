@@ -48,19 +48,22 @@ class FileHandler:
     """
 
     def __init__(self, 
-                 fn : str, 
                  extension : FileExtension, 
+                 fn : str = None, 
                  dir : str = 'data',
                  full_path : str = None) -> None:
         """
         Creates FileHandler instance.
 
+        Always provide `extension`.
+        Either provide `fn` and optionally `dir`, or provide `full_path`.
+
         Parameters
         ----------
-        fn : str
-            filename of the desired file
         extension : FileExtension
             handles file IO based on extension type
+        fn : str, optional
+            filename of the desired file, including extension
         dir : str, default='data'
             directory to put files in
         full_path : str, optional
@@ -79,8 +82,8 @@ class FileHandler:
 
     @classmethod
     def exact_path(cls,
-                      full_path : str, 
-                      extension : FileExtension):
+                   full_path : str, 
+                   extension : FileExtension):
         return cls(extension=extension, full_path=full_path)
 
 

@@ -19,15 +19,16 @@ class WaypointsModHandler(ABC):
 
     Attributes
     ----------
-    waypoints : list[dict]
-        the list of all the waypoints in the world/server 
+    waypoint_list : dict
+        the list of all the waypoints in all the worlds/servers
+        that the mod has created waypoints for
     """
 
     def __init__(self) -> None: 
         """
         Creates an instance of a WaypointsModHandler subclass.
         """
-        self.waypoints = []
+        self.waypoint_list = {}
 
 
 
@@ -36,7 +37,7 @@ class WaypointsModHandler(ABC):
     ####################################################################
 
     @abstractmethod
-    def get_worlds(self) -> list[str]:
+    def _get_worlds(self) -> list[str]:
         """
         Retrieves a list of all the names of worlds/servers that the 
         mods has waypoints created for.
@@ -49,17 +50,11 @@ class WaypointsModHandler(ABC):
 
 
     @abstractmethod
-    def get_world_waypoints(self, world_name : str) -> list[dict]:
+    def _get_world_waypoints(self, world_name : str) -> dict:
         """
         Retrieves a list of all the waypoints for a world which the mod 
-        has waypoints created. The data contained has only the data
-        points that are common between all waypoint mods. These
-        attributes are:
-        - name : str
-        - coordinates : { x : float, y : float, z : float }
-        - dimension : int (-1 = nether, 0 = overworld, 1 = end)
-        - color : hex
-        - visible : bool
+        has waypoints created. Different subclasses of this class will
+        implement different dict formats to return the waypoint data as.
 
         Parameters
         ----------
@@ -68,9 +63,8 @@ class WaypointsModHandler(ABC):
 
         Returns
         -------
-        list[dict]
-            a list of a world's waypoints' generalized data that all 
-            waypoint mods share
+        dict
+            a dict containing the world's waypoints'
         """
 
 
@@ -94,7 +88,7 @@ class WaypointsModHandler(ABC):
 
 
     @abstractmethod
-    def get_specific_world_name(self, search_name : str) -> str:
+    def _get_specific_world_name(self, search_name : str) -> str:
         """
         Obtains the file system name for the desired world/server. 
         Searches all world names using `search_name`, eventually 
@@ -113,7 +107,7 @@ class WaypointsModHandler(ABC):
 
 
     @abstractmethod
-    def get_matching_servers(self, search_name : str) -> list[str]:
+    def _get_matching_servers(self, search_name : str) -> list[str]:
         """
         Obtains the file system names of all worlds/serves containing 
         the given `search_name`.
@@ -131,7 +125,7 @@ class WaypointsModHandler(ABC):
 
 
     @abstractmethod
-    def choose_server(server_paths : list[str]) -> str:
+    def _choose_server(server_paths : list[str]) -> str:
         """
         Prompts user to choose the desired file system name for the 
         world from a list of possible worlds.
@@ -150,13 +144,45 @@ class WaypointsModHandler(ABC):
 
 
     ####################################################################
-    #####                     Writing Methods                      #####
+    #####                   Conversion Methods                     #####
     ####################################################################
 
     @abstractmethod
-    def add_world_waypoints(self, 
-                            world_name : str,
-                            waypoints : list[dict]) -> bool:
+    def convert_from_mod_to_standard(self, world_name : str) -> dict:
+        """
+
+
+        The data contained has only the data
+        points that are common between all waypoint mods. These
+        attributes are:
+        - name : str
+        - coordinates : { x : float, y : float, z : float }
+        - dimension : int (-1 = nether, 0 = overworld, 1 = end)
+        - color : hex
+        - visible : bool
+
+
+        Returns
+        -------
+        dict
+            a standardized formatted dict of a world's waypoints' 
+            data that all waypoint mods share
+        """
+
+    @abstractmethod
+    def _create_standardized_dict() -> dict:
+        """
+        
+        """
+
+    @abstractmethod
+    def convert_from_standard_to_mod() -> None:
+        """
+        
+        """
+
+    @abstractmethod
+    def _update_mod_waypoints(self) -> bool:
         """
         Adds the given waypoints to the given world's waypoint list.
         Options for features that are specific to individual mods are
@@ -167,7 +193,7 @@ class WaypointsModHandler(ABC):
         ----------
         world_name : str
             the name of the world/server to add waypoints to
-        waypoints : list[dict]
+        waypoints : dict
             the waypoints to add to the world/server
 
         Returns

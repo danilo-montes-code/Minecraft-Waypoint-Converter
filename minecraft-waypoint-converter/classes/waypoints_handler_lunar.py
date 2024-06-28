@@ -22,6 +22,46 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
     A class that represents a set of waypoints for the Lunar Client
     waypoints mod.
 
+    Lunar Client stores waypoints in the following format 
+    (all waypoints in single JSON file):
+
+    {
+        "version" : int,
+        "waypoints" : {
+            "sp:worldName OR mp:serverName" : {
+                "" : {
+                    "waypointName" : {
+                        "location" {
+                            "x" : int,
+                            "y" : int,
+                            "z" : int
+                        },
+                        "visible" : bool,
+                        "dimension" : int,
+                        "color" : {
+                            "value" : int,
+                            "chroma" : bool (only if true),
+                            "chromaSpeed" : "int" (only if not default),
+                            "chromaType" : str (only if "shift")
+                        },
+                        "showBeam" : bool,
+                        "showText" : bool
+                    }
+                }
+            },
+            ...
+        }
+    }
+
+    world tags
+        "sp:worldName" - singleplayer
+        "mp:serverName" - multiplayer
+
+    dimension tag (same for xaeros)
+        -1 - nether
+        0  - overworld
+        1  - end
+
     Attributes
     ----------
     waypoints_file : FileHandler
@@ -36,7 +76,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
 
         Parameters
         ----------
-        file_path : str
+        different_file_path : str, optional
             the path to the file where Lunar Client stores its waypoints
         """
         if not different_file_path:
@@ -63,32 +103,22 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
 
 
     ####################################################################
-    #####                   Waypoints Overrides                    #####
+    #####              WaypointsModHandler Overrides               #####
     ####################################################################
 
-    def get_worlds(self) -> list[str]:
+    def _get_worlds(self) -> list[str]:
         return [world for world in self.waypoint_list.keys()]
     
 
-    def get_world_waypoints(self, world_name: str) -> dict:
+    def _get_world_waypoints(self, world_name: str) -> dict:
 
         if not self.world_in_list(world_name):
             print('Given world not in world list')
             return None
 
-        found_world = self.get_specific_world_name(world_name)
+        found_world = self._get_specific_world_name(world_name)
 
-        for world, waypoints in self.waypoint_list.items():
-
-            # will be exact world name, no risk of different server being found
-            if world == found_world:
-                return waypoints[""]
-
-        return None
-
-
-    def add_world_waypoints(self, world_name: str, waypoints: list[str]) -> bool:
-        pass
+        return self.waypoint_list[found_world][""]
     
     
     def world_in_list(self, world_name: str) -> bool:
@@ -100,9 +130,9 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         return False
 
 
-    def get_specific_world_name(self, search_name: str) -> str:
+    def _get_specific_world_name(self, search_name: str) -> str:
 
-        matching_servers = self.get_matching_servers(search_name)
+        matching_servers = self._get_matching_servers(search_name)
 
         while len(matching_servers) == 0:
             print_script_message(
@@ -115,26 +145,25 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
                 ' (Only part of the name is necessary,' \
                 ' ex. "best" will find "best world")'
             )
-            matching_servers = self.get_matching_servers(server_name)
+            matching_servers = self._get_matching_servers(server_name)
 
         if len(matching_servers) == 1:
             return matching_servers[0]
         
-        return self.choose_server(matching_servers)
+        return self._choose_server(matching_servers)
 
-    
 
-    def get_matching_servers(self, search_name: str) -> list[str]:
+    def _get_matching_servers(self, search_name: str) -> list[str]:
 
         return list(
             filter(
                 lambda server_name: search_name.lower() in server_name.lower(),
-                self.get_worlds()
+                self._get_worlds()
             )
         )
 
 
-    def choose_server(server_paths: list[str]) -> str:
+    def _choose_server(server_paths: list[str]) -> str:
 
         print_script_message('Multiple servers were found that include the given name.')
         print_script_message('Please select the number of the desired server.')
@@ -144,26 +173,29 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         return server_paths[server_choice - 1]
     
 
+    def _update_mod_waypoints(self, world_name: str, waypoints: list[str]) -> bool:
+        raise NotImplementedError()
+
+
 
     ####################################################################
-    #####                 File Waypoints Overrides                 #####
+    #####            FileWaypointsModHandler Overrides             #####
     ####################################################################
 
-    def read(self) -> dict:
+    def read_waypoints(self) -> dict:
         return self.waypoints_file.read()
     
 
     def write(self, data : Any) -> bool:
-        # convert from YAML standard format to Lunar format
-        return self.waypoints_file.write(data)
-    
+        raise NotImplementedError
+        # TODO convert from YAML standard format to Lunar format
+        # return self.waypoints_file.write(data)
+
 
 
     ####################################################################
     #####                       Other Methods                      #####
     ####################################################################
 
-    def print(self) -> None:
+    def print_waypoints(self) -> None:
         self.waypoints_file.print()
-
-    

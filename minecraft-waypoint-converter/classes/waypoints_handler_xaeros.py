@@ -29,5 +29,5 @@ class XaerosWaypointsHandler(WaypointsModHandler):
     def print(self) -> None:
         self.file.print()
 
-    def get_worlds(self) -> list[str]:
+    def _get_worlds(self) -> list[str]:
         pass
