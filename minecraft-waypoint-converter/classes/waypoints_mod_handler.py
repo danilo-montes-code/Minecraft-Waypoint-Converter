@@ -33,8 +33,70 @@ class WaypointsModHandler(ABC):
 
 
     ####################################################################
+    #####                     Static Methods                       #####
+    ####################################################################
+
+    @staticmethod
+    @abstractmethod
+    def parse_world_name(world_name : str) -> str:
+        """
+        Parses the world name from the file system name and leaves only 
+        the general name of the world.
+
+        Parameters
+        ----------
+        world_name : str
+            the name to parse
+
+        Returns
+        -------
+        str
+            the parsed world name
+        """
+
+
+    @staticmethod
+    @abstractmethod
+    def get_world_type(world_name : str) -> bool:
+        """
+        Gets whether the world is singleplayer or multiplayer.
+
+        Parameters
+        ----------
+        world_name : str
+            the world to determine
+        
+        Returns
+        -------
+        bool
+            True,   if the server is singleplayer,
+            False,  if the server is multiplayer
+        """
+
+
+
+    ####################################################################
     #####                     Reading Methods                      #####
     ####################################################################
+
+    @abstractmethod
+    def get_world_name(self, search_name : str) -> str | None:
+        """
+        Finds and returns the desired world's name on the file system
+        for the mod.
+
+        Parameters
+        ----------
+        search_name : str
+            part of the world name to be searched for
+
+        Returns
+        -------
+        str
+            the file system name of the world,
+            None if the world is not found
+        """
+
 
     @abstractmethod
     def _get_worlds(self) -> list[str]:
@@ -69,7 +131,7 @@ class WaypointsModHandler(ABC):
 
 
     @abstractmethod
-    def world_in_list(self, world_name : str) -> bool:
+    def _world_in_list(self, world_name : str) -> bool:
         """
         Determines if the mod has waypoints created for the given
         world/server.
@@ -88,7 +150,7 @@ class WaypointsModHandler(ABC):
 
 
     @abstractmethod
-    def _get_specific_world_name(self, search_name : str) -> str:
+    def _get_specific_world_name(self, search_name : str) -> str | None:
         """
         Obtains the file system name for the desired world/server. 
         Searches all world names using `search_name`, eventually 
@@ -102,7 +164,8 @@ class WaypointsModHandler(ABC):
         Returns
         -------
         str
-            the file system name for the desired world/server
+            the file system name for the desired world/server, 
+            or None if the world was not in the mod's files
         """
 
 
@@ -125,7 +188,7 @@ class WaypointsModHandler(ABC):
 
 
     @abstractmethod
-    def _choose_server(server_paths : list[str]) -> str:
+    def _choose_server(self, server_paths : list[str]) -> str:
         """
         Prompts user to choose the desired file system name for the 
         world from a list of possible worlds.
@@ -153,6 +216,11 @@ class WaypointsModHandler(ABC):
         Converts this mod's complete waypoint data to the standardized
         format.
 
+        Parameters
+        ----------
+        world_name : str
+            name of the world to get waypoints for
+
         Returns
         -------
         dict
@@ -175,7 +243,11 @@ class WaypointsModHandler(ABC):
 
 
     @abstractmethod
-    def convert_from_standard_to_mod(self, standard_data : dict) -> bool:
+    def convert_from_standard_to_mod(
+        self, 
+        standard_data : dict,
+        world_name : str
+    ) -> bool:
         """
         Converts the standardized format to this mod's waypoint data.
 
@@ -183,6 +255,8 @@ class WaypointsModHandler(ABC):
         ----------
         standard_data : dict
             the standardized waypoint data to be converted
+        world_name : str
+            the name of the world/server to add waypoints to
 
         Returns
         -------
@@ -199,13 +273,6 @@ class WaypointsModHandler(ABC):
         Options for features that are specific to individual mods are
         not given any values, so they are left as default in class
         implementations of waypoint creation.
-
-        Parameters
-        ----------
-        world_name : str
-            the name of the world/server to add waypoints to
-        waypoints : dict
-            the waypoints to add to the world/server
 
         Returns
         -------

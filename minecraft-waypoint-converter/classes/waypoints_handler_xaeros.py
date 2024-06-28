@@ -7,13 +7,13 @@ Xaero's Minimap mod.
 
 from .file_extension import FileExtension
 from .file_txt import TxtFile
-from .waypoints_mod_handler import WaypointsModHandler
+from .waypoints_directory_mod_handler import DirectoryWaypointsModHandler
 
 from typing import Type, Any
 
 
 
-class XaerosWaypointsHandler(WaypointsModHandler):
+class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
 
     def __init__(self,
                  file_path : str) -> None:
