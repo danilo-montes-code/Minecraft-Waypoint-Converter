@@ -19,20 +19,42 @@ class DirectoryWaypointsModHandler(WaypointsModHandler):
 
     Attributes
     ----------
-    
+    base_directory_path : str
+        the path to the directory where all waypoints are stored
+    extension_of_files : FileExtension
+        the extension that all files share
     """
 
     def __init__(self,
                  base_directory_path : str,
                  extension_of_files : FileExtension) -> None:
+        """
+        Creates an instance of a DirectoryWaypointsModHandler subclass.
+
+        Parameters
+        ----------
+        base_directory_path : str
+            the path to the directory where all waypoints are stored
+        extension_of_files : FileExtension
+            the extension that all files share
+        """
+        
         self.base_directory_path = base_directory_path
         self.extension_of_files = extension_of_files
 
 
     @abstractmethod
-    def read_file(self, world_name : str) -> None:
-        pass
+    def get_world_directory(self, world_name : str) -> str:
+        """
+        Gets the path of the directory that holds all world waypoints.
 
-    @abstractmethod
-    def write_file(self, world_name : str) -> None:
-        pass
+        Parameters
+        ----------
+        world_name : str
+            the name of the world to get the directory from
+
+        Returns
+        -------
+        str
+            the path of the directory
+        """

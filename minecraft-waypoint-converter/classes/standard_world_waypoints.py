@@ -52,17 +52,15 @@ class StandardWorldWaypoints():
     ----------
     world_name : str
         the name of the world/server
-    world_type : bool
-        indication of what type of world the world is:
-        True - singleplayer,
-        False - multiplayer
+    world_type : str
+        indication of what type of world the world is
     waypoints_file : FileHandler
         class to handle the file for this world's standardized waypoints
     """
 
     def __init__(self,
                  world_name : str,
-                 world_type : bool) -> None:
+                 world_type : str) -> None:
         """
         Creates an instance of a StandardWorldWaypoints subclass.
         
@@ -77,7 +75,7 @@ class StandardWorldWaypoints():
         """
 
         self.world_name : str = world_name
-        self.world_type : bool = world_type
+        self.world_type : str = world_type
 
 
         # Format preserved for if number of world types becomes
@@ -103,7 +101,7 @@ class StandardWorldWaypoints():
 
         standardized_waypoints_file_path : str = os.path.join(
             os.getcwd(), 'minecraft-waypoint-converter', 'data',
-            'singleplayer' if world_type else 'multiplayer',
+            world_type,
         )
 
         self.waypoints_file = FileHandler.exact_path(

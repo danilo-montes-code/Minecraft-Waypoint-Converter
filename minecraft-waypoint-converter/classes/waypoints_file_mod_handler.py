@@ -33,6 +33,13 @@ class FileWaypointsModHandler(WaypointsModHandler):
                  extension : FileExtension) -> None:
         """
         Creates an instance of a FileWaypointsModHandler subclass.
+
+        Parameters
+        ----------
+        file_path : str
+            the full path of the waypoints file
+        extension : FileExtension
+            the extension of said file
         """
 
         self.waypoints_file = FileHandler.exact_path(
@@ -47,6 +54,11 @@ class FileWaypointsModHandler(WaypointsModHandler):
     def read_waypoints(self) -> dict:
         """
         Reads and returns the data held within the waypoints file.
+
+        Returns
+        -------
+        dict
+            the data held within the file
         """
         
 

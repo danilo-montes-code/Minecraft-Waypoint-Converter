@@ -10,6 +10,7 @@ Dependencies:
 
 
 from classes import *
+from classes.waypoints_mod_handler import WaypointsModHandler
 
 import os, json, sys
 from pathlib import Path
@@ -24,9 +25,9 @@ from pathlib import Path
 HOME_DIR = Path.home()
 APP_DATA = Path(os.getenv('APPDATA'))
 
-MOD_CLASSES = {
+MOD_CLASSES : dict[str, WaypointsModHandler] = {
     'lunar client'      : LunarWaypointsHandler() or None,
-    'xaero\'s minimap'  : LunarWaypointsHandler() or None
+    'xaero\'s minimap'  : XaerosWaypointsHandler() or None
 }
 
 
@@ -260,7 +261,7 @@ def get_world_info(mod_name : str, mod_world_name : str) -> tuple[str, bool]:
 
     Returns
     -------
-    tuple[str, bool]
+    tuple[str, str]
         the name of the world and the world type
     """
 
@@ -396,9 +397,8 @@ def main() -> None:
 
     # xaeros
     elif option == 4:
-        print(HOME_DIR)
-        print(APP_DATA)
-        get_waypoints_xaeros()
+        xaeros = MOD_CLASSES['xaero\'s minimap']
+        print(xaeros._get_world_waypoints('soub'))
 
 
 

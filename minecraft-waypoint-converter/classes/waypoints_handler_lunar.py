@@ -8,7 +8,6 @@ Lunar Client's waypoint mod.
 from .waypoints_file_mod_handler import FileWaypointsModHandler
 from .file_json import JSONFile
 from .useful_methods import (print_script_message, 
-                             prompt_for_answer, 
                              select_list_options)
 
 from typing import Any
@@ -19,8 +18,8 @@ from pathlib import Path
 
 class LunarWaypointsHandler(FileWaypointsModHandler):
     """
-    A class that represents a set of waypoints for the Lunar Client
-    waypoints mod.
+    A class that handles reading and writing waypoints to and from
+    Lunar Client's waypoint mod.
 
     Lunar Client stores waypoints in the following format 
     (all waypoints in single JSON file):
@@ -116,8 +115,9 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         return world_name[3:]
 
 
-    def get_world_type(world_name : str) -> bool:
-        return world_name[:2] == 'sp'
+    def get_world_type(world_name : str) -> str:
+        # does not account for realms, since I am unaware of realms format
+        return 'singleplayer' if world_name[:2] == 'sp' else 'multiplayer'
 
 
     def get_world_name(self, search_name : str) -> str | None:

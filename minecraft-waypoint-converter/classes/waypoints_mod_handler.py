@@ -57,7 +57,7 @@ class WaypointsModHandler(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_world_type(world_name : str) -> bool:
+    def get_world_type(world_name : str) -> str:
         """
         Gets whether the world is singleplayer or multiplayer.
 
@@ -68,9 +68,8 @@ class WaypointsModHandler(ABC):
         
         Returns
         -------
-        bool
-            True,   if the server is singleplayer,
-            False,  if the server is multiplayer
+        str
+            the type of the world
         """
 
 
