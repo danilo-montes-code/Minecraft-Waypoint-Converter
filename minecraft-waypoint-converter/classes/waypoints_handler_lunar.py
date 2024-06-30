@@ -32,9 +32,9 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
                 "" : {
                     "waypointName" : {
                         "location" {
-                            "x" : int,
-                            "y" : int,
-                            "z" : int
+                            "x" : float,
+                            "y" : float,
+                            "z" : float
                         },
                         "visible" : bool,
                         "dimension" : int,
@@ -182,11 +182,60 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
     
 
     def convert_from_mod_to_standard(self, world_name: str) -> dict:
-        raise NotImplementedError()
+        
+        standardized_dict = self._create_standardized_dict(world_name=world_name)
+
+        standardized_dict = {
+            key: value for (key, value) in standardized_dict.items() if value
+        }
+
+        return standardized_dict
     
 
-    def _create_standardized_dict(self) -> dict:
-        raise NotImplementedError()
+    def _create_standardized_dict(self, world_name: str) -> dict:
+
+        world_waypoints = self._get_world_waypoints(world_name=world_name)
+
+        standardized_format = {
+            'overworld' : {},
+            'nether' : {},
+            'end' : {}
+        }
+
+        for wp_name, wp_data in world_waypoints.items():
+
+            # verify duplicate names are not overriden
+            dimension = 'filler_dimension'
+
+            match wp_data['dimension']:
+
+                case 0:
+                    dimension = 'overworld'
+
+                case -1:
+                    dimension = 'nether'
+
+                case 1:
+                    dimension = 'end'
+
+                # other dimension
+                case _:
+                    pass
+
+
+            color = wp_data['color']['value'] if 'color' in wp_data else 0
+
+            standardized_format[dimension][wp_name] = {
+                'coordinates' : {
+                    'x' : wp_data['location']['x'],
+                    'y' : wp_data['location']['y'],
+                    'z' : wp_data['location']['z']
+                },
+                'color' : color,
+                'visible' : wp_data['visible']
+            }
+
+        return standardized_format
     
 
     def convert_from_standard_to_mod(

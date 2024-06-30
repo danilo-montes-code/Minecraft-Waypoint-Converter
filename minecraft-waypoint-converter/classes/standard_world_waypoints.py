@@ -104,7 +104,6 @@ class StandardWorldWaypoints():
         standardized_waypoints_file_path : str = os.path.join(
             os.getcwd(), 'minecraft-waypoint-converter', 'data',
             'singleplayer' if world_type else 'multiplayer',
-            world_name
         )
 
         self.waypoints_file = FileHandler.exact_path(

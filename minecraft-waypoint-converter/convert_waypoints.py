@@ -214,6 +214,9 @@ def convert_waypoints(
     """
 
     # create standard_world_wps instance
+
+    from_mod_handler = MOD_CLASSES[from_mod]
+    to_mod_handler = MOD_CLASSES[to_mod]
     
     world_name, world_type = get_world_info(from_mod, from_mod_world_name)
 
@@ -225,15 +228,24 @@ def convert_waypoints(
     
     # from_mod - get waypoints of world in std mod wp format,
     #            convert wps to standard format dict
+    standardized_waypoints = from_mod_handler.convert_from_mod_to_standard(
+        world_name=from_mod_world_name
+    )
+
 
     # from_mod -> std_world_wps - save to standard yaml file
-
-    # std_world_wps -> to_mod - read from standard yaml file
+    standard_file.write_waypoints(given_waypoints=standardized_waypoints)
+    exit()
 
     # to_mod - convert wps to std mop wp format,
     #          add wps to world in mod's files
+    conversion_successful = to_mod_handler.convert_from_standard_to_mod(
+        standard_data=standardized_waypoints,
+        world_name=to_mod_world_name,
+        testing=True
+    )
 
-    raise NotImplementedError()
+    return conversion_successful
 
 
 def get_world_info(mod_name : str, mod_world_name : str) -> tuple[str, bool]:
@@ -257,9 +269,11 @@ def get_world_info(mod_name : str, mod_world_name : str) -> tuple[str, bool]:
     world_type : str = None
 
     match mod_name:
+        
         case 'lunar client':
             world_name = LunarWaypointsHandler.parse_world_name(mod_world_name)
             world_type = LunarWaypointsHandler.get_world_type(mod_world_name)
+            
         case 'xaero\'s minimap':
             world_name = XaerosWaypointsHandler.parse_world_name(mod_world_name)
             world_type = XaerosWaypointsHandler.get_world_type(mod_world_name)

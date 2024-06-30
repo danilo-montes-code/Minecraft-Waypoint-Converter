@@ -6,7 +6,8 @@ Contains class that handles a single file.
 # python native
 import sys, os
 from pathlib import Path
-from typing import Type, Any
+import ntpath
+from typing import Any
 
 # in project
 from .file_extension import FileExtension
@@ -108,10 +109,10 @@ class FileHandler:
 
         created = False
         try:
-            Path(dir_path).mkdir()
+            Path(dir_path).mkdir(parents=True, exist_ok=True)
             created = True
 
-        except FileExistsError as e:
+        except FileExistsError:
             created = True
 
         except Exception as e:
@@ -126,7 +127,6 @@ class FileHandler:
         """
         Creates file at path specified in attribute.
 
-
         Returns
         -------
         bool
@@ -139,6 +139,12 @@ class FileHandler:
             with open(self.path, 'a+'):
                 file_created_successfully = True
 
+        except FileNotFoundError as e:
+            if not FileHandler.create_dir(os.path.dirname(self.path)):
+                return False
+
+            return self.create_file()
+
         except IOError as e:
             handle_error(e, 'FileHandler.create_file()', 
                          'error creating file')
@@ -147,8 +153,7 @@ class FileHandler:
             handle_error(e, 'FileHandler.create_file()', 
                          'erroneous error creating file')
 
-        finally:
-            return file_created_successfully
+        return file_created_successfully
         
 
     def file_exists(self) -> bool:

@@ -219,7 +219,8 @@ class WaypointsModHandler(ABC):
         Parameters
         ----------
         world_name : str
-            name of the world to get waypoints for
+            name of the world to get waypoints for, as it appears in the
+            mod's file system
 
         Returns
         -------
@@ -230,10 +231,16 @@ class WaypointsModHandler(ABC):
 
 
     @abstractmethod
-    def _create_standardized_dict(self) -> dict:
+    def _create_standardized_dict(self, world_name : str) -> dict:
         """
         Creates the dictionary with the world's waypoints in the
         standardized format.
+
+        Parameters
+        ----------
+        world_name : str
+            name of the world to get waypoints for, as it appears in the
+            mod's file system
 
         Returns
         -------
@@ -246,7 +253,8 @@ class WaypointsModHandler(ABC):
     def convert_from_standard_to_mod(
         self, 
         standard_data : dict,
-        world_name : str
+        world_name : str,
+        testing : bool = False
     ) -> bool:
         """
         Converts the standardized format to this mod's waypoint data.
@@ -257,6 +265,9 @@ class WaypointsModHandler(ABC):
             the standardized waypoint data to be converted
         world_name : str
             the name of the world/server to add waypoints to
+        testing : bool
+            True,   if the method is being tested,
+            False,  otherwise
 
         Returns
         -------
