@@ -126,7 +126,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         return [dir_name for dir_name in os.listdir(self.base_directory_path)]
 
 
-    def _get_world_waypoints(self, world_name : str) -> list[str]:
+    def _get_world_waypoints(self, world_name : str) -> dict:
         
         found_world = self._get_specific_world_name(search_name=world_name)
 
@@ -136,7 +136,27 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
                 ' the exact way it appears in the Xaero\'s dir.'
             )
 
-        print(found_world)
+        world_dir = os.path.join(self.base_directory_path, found_world)
+
+        waypoints = {
+            'overworld' : [],
+            'nether' : [],
+            'end' : []
+        }
+
+        for item in os.listdir(world_dir):
+
+            item_path = os.path.join(world_dir, item)
+
+            if not os.path.isdir(item_path):
+                continue
+
+            print(item_path)
+
+            # get dimension from item
+            # read file with FileHandler
+            # save data in waypoints dict
+
 
         raise NotImplementedError()
 
