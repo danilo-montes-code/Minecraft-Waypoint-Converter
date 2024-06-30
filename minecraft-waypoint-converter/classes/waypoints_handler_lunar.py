@@ -62,6 +62,8 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         0  - overworld
         1  - end
 
+    Lunar Client does NOT allow for duplicate waypoint names.
+
     Attributes
     ----------
     waypoints_file : FileHandler
@@ -241,12 +243,39 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
     def convert_from_standard_to_mod(
             self, 
             standard_data : dict, 
-            world_name : str
+            world_name : str,
+            testing : bool = False
         ) -> bool:
+        
+        existing_waypoints = self._get_world_waypoints(world_name=world_name)
+        wps_to_add = {}
+
+        for dimension, waypoints in standard_data.items():
+            for wp_name, wp_data in waypoints.items():
+                if wp_name in existing_waypoints:
+                    print_script_message(f'Waypoint with name "{wp_name}" already exists, skipping...')
+                    continue
+
+                wps_to_add[wp_name] = self._create_mod_waypoint_dict(
+                    standard_wp_dict=wp_data,
+                    dimension=dimension
+                )
+
+        combined_waypoints = {**existing_waypoints, **wps_to_add}
+
+        if testing:
+            from json import dumps
+            print(dumps(combined_waypoints, indent=2))
+            return False
+        
         raise NotImplementedError()
+
     
 
-    def _add_waypoints_to_mod(self, world_name: str, waypoints: list[str]) -> bool:
+    def _add_waypoints_to_mod(self, 
+                              world_name: str, 
+                              waypoints: dict
+        ) -> bool:
         raise NotImplementedError()
 
 
@@ -274,3 +303,46 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         """
 
         self.waypoints_file.print()
+
+
+    def _create_mod_waypoint_dict(
+            self, 
+            standard_wp_dict : dict, 
+            dimension : str
+        ) -> dict:
+        
+        dimension_int : int
+
+        match dimension:
+            case 'overworld':
+                dimension_int = 0
+
+            case 'nether':
+                dimension_int = -1
+
+            case 'end':
+                dimension_int = 1
+
+            # have not tested modded dimensions, so don't know
+            # what int they get 
+            case _:
+                dimension_int = 2
+
+
+        lunar_dict = {
+            'location' : {
+                'x' : standard_wp_dict['coordinates']['x'],
+                'y' : standard_wp_dict['coordinates']['y'],
+                'z' : standard_wp_dict['coordinates']['z']
+            },
+            'visible' : standard_wp_dict['visible'],
+            'dimension' : dimension_int,
+            'color' : {
+                'value' : standard_wp_dict['color']
+            },
+            'showBeam' : True,
+            'showText' : True
+        }
+
+        return lunar_dict
+    

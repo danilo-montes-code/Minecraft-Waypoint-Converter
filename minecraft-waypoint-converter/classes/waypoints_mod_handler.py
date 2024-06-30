@@ -278,12 +278,22 @@ class WaypointsModHandler(ABC):
 
 
     @abstractmethod
-    def _add_waypoints_to_mod(self) -> bool:
+    def _add_waypoints_to_mod(self, 
+                              world_name: str, 
+                              waypoints: dict
+    ) -> bool:
         """
         Adds the given waypoints to the given world's waypoint list.
         Options for features that are specific to individual mods are
         not given any values, so they are left as default in class
         implementations of waypoint creation.
+
+        Parameters
+        ----------
+        world_name : str
+            the name of the world to add waypoints to
+        waypoints : dict
+            waypoint data to add to the world's waypoint list
 
         Returns
         -------

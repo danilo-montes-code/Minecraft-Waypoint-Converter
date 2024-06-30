@@ -235,7 +235,6 @@ def convert_waypoints(
 
     # from_mod -> std_world_wps - save to standard yaml file
     standard_file.write_waypoints(given_waypoints=standardized_waypoints)
-    exit()
 
     # to_mod - convert wps to std mop wp format,
     #          add wps to world in mod's files

@@ -22,6 +22,10 @@ Uses YAML as the standardized format
 
 ### Xaero's Minimap
 - Name waypoint
+- Toggle waypoint visibility
+- Specify waypoint dimension
+- Color waypoint
+- Can create duplicate waypoint names
 
 
 
