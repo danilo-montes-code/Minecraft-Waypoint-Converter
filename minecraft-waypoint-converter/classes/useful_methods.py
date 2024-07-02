@@ -110,6 +110,7 @@ def select_list_options(options : list[str]) -> int:
         if choice < 1 or choice > len(options):
             raise IndexError
         
+        print()
         return choice
 
     except ValueError:

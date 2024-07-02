@@ -18,7 +18,6 @@ import os
 
 
 
-
 class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
     """
     A class that that handles reading and writing waypoints to and from
@@ -371,30 +370,30 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
                     waypoint_name=wp_name
                 )
 
-        if testing:
+        # if testing:
 
-            print('>>>>> existing waypoints')
-            for wp_name in existing_waypoints['overworld'].keys():
-                print(wp_name)
+        #     print('>>>>> existing waypoints')
+        #     for wp_name in existing_waypoints['overworld'].keys():
+        #         print(wp_name)
 
-            print('>>>>> to add waypoints')
-            for wp_name in wps_to_add['overworld'].keys():
-                print(wp_name)
+        #     print('>>>>> to add waypoints')
+        #     for wp_name in wps_to_add['overworld'].keys():
+        #         print(wp_name)
 
         combined_waypoints = self._merge_dicts(existing_waypoints, wps_to_add)
 
-        if testing:
-            print('>>>>> combined waypoints')
-            for wp_name in combined_waypoints['overworld'].keys():
-                print(wp_name)
+        # if testing:
+        #     print('>>>>> combined waypoints')
+        #     for wp_name in combined_waypoints['overworld'].keys():
+        #         print(wp_name)
 
-            print('>>>>> existing waypoints')
-            for wp_name in existing_waypoints['overworld'].keys():
-                print(wp_name)
+        #     print('>>>>> existing waypoints')
+        #     for wp_name in existing_waypoints['overworld'].keys():
+        #         print(wp_name)
 
-            print('>>>>> to add waypoints')
-            for wp_name in wps_to_add['overworld'].keys():
-                print(wp_name)
+        #     print('>>>>> to add waypoints')
+        #     for wp_name in wps_to_add['overworld'].keys():
+        #         print(wp_name)
         
 
         return  self._add_waypoints_to_mod(
@@ -437,13 +436,15 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
                 extension=TxtFile
             )
         }
-        
-        from json import dumps
+
+        error_in_write = False
+
+        # from json import dumps
         for dimension, dimension_waypoints in waypoints.items():
 
-            print(f'>>>>> Handling {dimension}...')
+            # print(f'>>>>> Handling {dimension}...')
 
-            print(dumps(dimension_waypoints, indent=2))
+            # print(dumps(dimension_waypoints, indent=2))
 
             dimension : str
 
@@ -455,7 +456,11 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
             if write_successful:
                 print_script_message(f'{dimension.title()} waypoints written.')
             else:
-                print_script_message(f'Failure writting {dimension.title()} waypoints.')
+                error_in_write = True
+                print_script_message(f'Failure writing {dimension.title()} waypoints.')
+
+        return not error_in_write
+
 
 
     ####################################################################
@@ -481,9 +486,9 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         xaeros_dict = {
             'name' : waypoint_name, 
             'initials' : waypoint_name[0].title(),
-            'x' : standard_wp_dict['coordinates']['x'],
-            'y' : standard_wp_dict['coordinates']['y'],
-            'z' : standard_wp_dict['coordinates']['z'],
+            'x' : int(standard_wp_dict['coordinates']['x']),
+            'y' : int(standard_wp_dict['coordinates']['y']),
+            'z' : int(standard_wp_dict['coordinates']['z']),
             'color' : standard_wp_dict['color'],
             'disabled' : standard_wp_dict['visible'],
             'type' : 0, # default
@@ -507,7 +512,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
 
         for wp_name, wp_data in mod_formatted_waypoints.items():
 
-            print(f'>>> handling {wp_name}')
+            # print(f'>>> handling {wp_name}')
 
             line_format = \
                 f'waypoint:{wp_name}:{wp_data['initials']}:{wp_data['x']}:' \
@@ -518,7 +523,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
             
             lines_to_write.append(line_format)
 
-            print(line_format)
+            # print(line_format)
 
         return waypoint_file.write(data=lines_to_write)       
         
@@ -548,3 +553,4 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
             else:
                 dict1[key] = dict2[key]
         return dict1
+    
