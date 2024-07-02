@@ -245,6 +245,13 @@ def convert_waypoints(
         testing=True
     )
 
+    wps = standard_file.read_waypoints()
+
+    print('From standard yaml file.')
+    for dimension, wps in wps.items():
+        for wp_name in wps:
+            print(wp_name)
+
     return conversion_successful
 
 
@@ -358,7 +365,7 @@ def determine_options(number_max : int) -> int:
 
 def main() -> None: 
 
-    option = determine_options(4)
+    option = determine_options(6)
 
     if option == -1:
         return
@@ -368,22 +375,53 @@ def main() -> None:
     if option == 0:
         run_driver()
 
+        wps_lunar = MOD_CLASSES['lunar client']._get_world_waypoints(
+            world_name="kidnamedsoub"
+        )
+
+        wps_xaeros = MOD_CLASSES['xaero\'s minimap']._get_world_waypoints(
+            world_name="kidnamedsoub"
+        )
+
+        print('Separate lunar and xaeros lists')
+        # for wp_name in wps_lunar.keys():
+        #     print(wp_name)
+
+        for dimension in wps_xaeros.keys():
+            for wp in wps_xaeros[dimension]:
+                print(wp['name'])
+
+
 
     # get lunar wps file
     elif option == 1:
         MOD_CLASSES['lunar client'].print_waypoints()
 
+        
 
     # get kidnamedsoub wps
     elif option == 2:
-        print(
-            json.dumps(
-                MOD_CLASSES['lunar client']._get_world_waypoints(
-                    world_name="kidnamedsoub"
-                ), 
-                indent=2
-            )
+        wps_lunar = MOD_CLASSES['lunar client']._get_world_waypoints(
+            world_name="kidnamedsoub"
         )
+
+        wps_xaeros = MOD_CLASSES['xaero\'s minimap']._get_world_waypoints(
+            world_name="kidnamedsoub"
+        )
+
+        print('Separate lunar and xaeros lists')
+        for wp_name in wps_lunar.keys():
+            print(wp_name)
+
+        for dimension in wps_xaeros.keys():
+            for wp in wps_xaeros[dimension].keys():
+                print(wp)
+        # print(
+        #     json.dumps(
+        #         wps, 
+        #         indent=2
+        #     )
+        # )
 
 
     # choosing from multiple lunar worlds
@@ -398,9 +436,26 @@ def main() -> None:
     # xaeros
     elif option == 4:
         xaeros = MOD_CLASSES['xaero\'s minimap']
-        print(xaeros._get_world_waypoints('soub'))
+        print(
+            json.dumps(
+                xaeros._get_world_waypoints('soub'),
+                indent=2
+            )
+        )
 
 
+    elif option == 5:
+        xaeros = MOD_CLASSES['xaero\'s minimap']
+        print(
+            json.dumps(
+                xaeros.convert_from_mod_to_standard('soub'),
+                indent=2
+            )
+        )
+
+
+    elif option == 6:
+        pass
 
 
 

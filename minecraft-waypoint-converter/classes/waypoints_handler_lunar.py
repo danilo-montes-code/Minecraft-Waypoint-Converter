@@ -252,6 +252,9 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
 
         for dimension, waypoints in standard_data.items():
             for wp_name, wp_data in waypoints.items():
+
+                # remove duplicate waypoint names because Lunar does not
+                # support duplicate waypoint names
                 if wp_name in existing_waypoints:
                     print_script_message(f'Waypoint with name "{wp_name}" already exists, skipping...')
                     continue
@@ -271,7 +274,6 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         raise NotImplementedError()
 
     
-
     def _add_waypoints_to_mod(self, 
                               world_name: str, 
                               waypoints: dict

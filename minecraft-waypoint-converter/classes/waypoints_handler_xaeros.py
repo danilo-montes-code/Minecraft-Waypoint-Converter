@@ -5,7 +5,7 @@ Xaero's Minimap mod.
 """
 
 
-from .file_extension import FileExtension
+from .file_handler import FileHandler
 from .file_txt import TxtFile
 from .waypoints_directory_mod_handler import DirectoryWaypointsModHandler
 from .useful_methods import (print_script_message, 
@@ -127,7 +127,82 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
 
 
     def _get_world_waypoints(self, world_name : str) -> dict:
+
+        def get_dimension_name(dir_name : str) -> str:
+            """
+            Gets the name of the dimension from the name of the
+            directory.
+
+            Parameters
+            ----------
+            dir_name : str
+                the name of the directory to get the dimension from
+
+            Returns
+            -------
+            str
+                the name of the dimension
+            """
+
+            dir_name = dir_name.replace('dim%', '')
+
+            try:
+                dimension_int = int(dir_name)
+
+                # unaware of custom dimension ints
+                dimensions = ['overworld', 'end', 'nether']
+                return dimensions[dimension_int]
+            
+            except (IndexError, ValueError):
+                print_script_message(f'Dimension in folder {dir_name} is invalid')
+                return 'filler_dimension'
+            
         
+        def get_formatted_wp_dict(line_data : str) -> dict | None:
+            """
+            Creates the formatted waypoint dict from the line.
+
+            Parameters
+            ----------
+            line_data : str
+                the line from the file
+
+            Returns
+            -------
+            dict
+                the formatted waypoint dict,
+                None,   if the line does not contain waypoint data
+                        or upon error
+            """
+            if line_data.startswith('sets') or line_data.startswith('#'):
+                return None
+                
+            line_data = line_data.split(':')
+
+            try:
+                waypoint_format = {
+                    'name' : line_data[1], 
+                    'initials' : line_data[2],
+                    'x' : line_data[3],
+                    'y' : line_data[4],
+                    'z' : line_data[5],
+                    'color' : line_data[6],
+                    'disabled' : line_data[7],
+                    'type' : line_data[8],
+                    'set' : line_data[9], 
+                    'rotate_on_tp' : line_data[10], 
+                    'tp_yaw' : line_data[11], 
+                    'visibility_type' : line_data[12],
+                    'destination' : line_data[13]
+                }
+
+                return waypoint_format
+
+            except (ValueError, IndexError):
+                print_script_message(f'Error in line parsing: {line_data}')
+                return None
+
+
         found_world = self._get_specific_world_name(search_name=world_name)
 
         if not found_world:
@@ -147,18 +222,28 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         for item in os.listdir(world_dir):
 
             item_path = os.path.join(world_dir, item)
-
             if not os.path.isdir(item_path):
                 continue
 
-            print(item_path)
+            dimension = get_dimension_name(item)
 
-            # get dimension from item
             # read file with FileHandler
-            # save data in waypoints dict
+            waypoint_file = FileHandler.exact_path(
+                full_path=os.path.join(item_path, 'mw$default_1.txt'),
+                extension=TxtFile
+            )
 
+            waypoint_file_data = waypoint_file.read()
 
-        raise NotImplementedError()
+            for line in waypoint_file_data:
+
+                formatted_wp_dict = get_formatted_wp_dict(line_data=line)
+                if not formatted_wp_dict:
+                    continue
+
+                waypoints[dimension].append(formatted_wp_dict)
+
+        return waypoints
 
 
     def _world_in_list(self, world_name : str) -> bool:
@@ -223,18 +308,70 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
             'end' : {}
         }
 
-        for waypoint in world_waypoints:
-            pass
+        for dimension in world_waypoints:
+            for dimension_waypoint in world_waypoints[dimension]:
+                
+                wp_name = dimension_waypoint['name']
 
-        raise NotImplementedError()
+                standardized_format[dimension][wp_name] = {
+                    'coordinates' : {
+                        'x' : dimension_waypoint['x'],
+                        'y' : dimension_waypoint['y'],
+                        'z' : dimension_waypoint['z']
+                    },
+                    'color' : dimension_waypoint['color'],
+                    'visible' : dimension_waypoint['disabled']
+                }
+
+        return standardized_format
 
 
+    """
+    waypoint_format = {
+        'name' : line_data[1], 
+        'initials' : line_data[2],
+        'x' : line_data[3],
+        'y' : line_data[4],
+        'z' : line_data[5],
+        'color' : line_data[6],
+        'disabled' : False, # default
+        'type' : 0, # default
+        'set' : 'gui.xaero_default', # default
+        'rotate_on_tp' : False, # default
+        'tp_yaw' : 0, # default
+        'visibility_type' : 0, # default
+        'destination' : False # default
+    }
+    """
     def convert_from_standard_to_mod(
         self, 
         standard_data : dict,
         world_name : str,
         testing : bool = False
     ) -> bool:
+        
+        existing_waypoints = self._get_world_waypoints(world_name=world_name)
+        wps_to_add = {
+            'overworld' : {},
+            'nether' : {},
+            'end' : {}
+        }
+
+        for dimension, waypoints in standard_data.items():
+            for wp_name, wp_data in waypoints.items():
+
+                wps_to_add[dimension][wp_name] = self._create_mod_waypoint_dict(
+                    standard_wp_dict=wp_data,
+                    waypoint_name=wp_name
+                )
+
+        combined_waypoints = {**existing_waypoints, **wps_to_add}
+
+        if testing:
+            from json import dumps
+            print(dumps(combined_waypoints, indent=2))
+            return False
+        
         raise NotImplementedError()
 
 
@@ -259,3 +396,26 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
     #####                       Other Methods                      #####
     ####################################################################
 
+    def _create_mod_waypoint_dict(
+            self, 
+            standard_wp_dict : dict, 
+            waypoint_name : str
+        ) -> dict:
+
+        xaeros_dict = {
+            'name' : waypoint_name, 
+            'initials' : waypoint_name[0].title(),
+            'x' : standard_wp_dict['coordinates']['x'],
+            'y' : standard_wp_dict['coordinates']['y'],
+            'z' : standard_wp_dict['coordinates']['z'],
+            'color' : standard_wp_dict['color'],
+            'disabled' : standard_wp_dict['visible'],
+            'type' : 0, # default
+            'set' : 'gui.xaero_default', # default
+            'rotate_on_tp' : False, # default
+            'tp_yaw' : 0, # default
+            'visibility_type' : 0, # default
+            'destination' : False # default
+        }
+
+        return xaeros_dict
