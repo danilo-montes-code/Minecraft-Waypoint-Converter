@@ -73,7 +73,7 @@ class TxtFile(FileExtension):
 
     def write(self, data: list[str]) -> bool:
         """
-        Writes data to txt file.
+        Writes data to txt file. Overwrites all data held in file.
 
         Parameters
         ----------

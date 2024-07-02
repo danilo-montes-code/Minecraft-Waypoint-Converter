@@ -17,7 +17,8 @@ import os
 class StandardWorldWaypoints():
     """
     A class that handles reading and writing waypoints to and from
-    a standardized format. The data is for a single world/server.
+    a standardized format. The data is for a single world/server, and
+    from a single mod.
 
     The standard format includes only waypoint data that is common
     between all waypoint mods. The format is as follows:
@@ -56,11 +57,14 @@ class StandardWorldWaypoints():
         indication of what type of world the world is
     waypoints_file : FileHandler
         class to handle the file for this world's standardized waypoints
+    mod_name : str
+        name of the mod whose standardized waypoints are held in the file
     """
 
     def __init__(self,
                  world_name : str,
-                 world_type : str) -> None:
+                 world_type : str,
+                 mod_name : str) -> None:
         """
         Creates an instance of a StandardWorldWaypoints subclass.
         
@@ -68,14 +72,15 @@ class StandardWorldWaypoints():
         ----------
         world_name : str
             the name of the world/server
-        world_type : int
-            indication of what type of world the world is:
-            True - singleplayer,
-            False - multiplayer
+        world_type : str
+            indication of what type of world the world is
+        mod_name : str
+            name of the mod whose standardized waypoints are held in the file
         """
 
         self.world_name : str = world_name
         self.world_type : str = world_type
+        self.mod_name : str = mod_name
 
 
         # Format preserved for if number of world types becomes
@@ -107,7 +112,7 @@ class StandardWorldWaypoints():
         self.waypoints_file = FileHandler.exact_path(
             full_path=os.path.join(
                 standardized_waypoints_file_path,
-                f'{world_name}.yaml'
+                f'{mod_name}_{world_name}.yaml'
             ),
             extension=YAMLFile
         )

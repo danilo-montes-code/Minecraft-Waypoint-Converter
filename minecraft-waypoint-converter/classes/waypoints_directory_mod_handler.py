@@ -6,11 +6,15 @@ Class is written as an abstract class.
 """
 
 
+
 from .file_extension import FileExtension
 from .waypoints_mod_handler import WaypointsModHandler
 
 from abc import abstractmethod
 from typing import Any
+
+
+
 
 class DirectoryWaypointsModHandler(WaypointsModHandler):
     """
@@ -44,7 +48,7 @@ class DirectoryWaypointsModHandler(WaypointsModHandler):
 
 
     @abstractmethod
-    def get_world_directory(self, world_name : str) -> str:
+    def _get_world_directory(self, world_name : str) -> str:
         """
         Gets the path of the directory that holds all world waypoints.
 

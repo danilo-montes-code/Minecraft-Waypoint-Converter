@@ -12,21 +12,15 @@ Uses YAML as the standardized format
 
 ## Mod Features
 
-### Lunar Client
-- Name waypoint
-- Toggle waypoint visibility
-- Specify waypoint dimension
-- Color waypoint
-- Show waypoint beam in game
-- Show waypoint text in game
-
-### Xaero's Minimap
-- Name waypoint
-- Toggle waypoint visibility
-- Specify waypoint dimension
-- Color waypoint
-- Can create duplicate waypoint names
-
+| Mod Features                          | Lunar Client | Xaero's Minimap |
+| :------------------------------------ | :----------: | :-------------: |
+| Name waypoint                         | ✓            | ✓              |
+| Specify waypoint dimension            | ✓            | ✓              |
+| Color waypoint                        | ✓            | ✓              |
+| Toggle waypoint visibility            | ✓            | ✓              |
+| Create waypoints with duplicate names |              | ✓              |
+| Show waypoint beam in game            | ✓            |                |
+| Show waypoint text in game            | ✓            |                |
 
 
 # Planned Features

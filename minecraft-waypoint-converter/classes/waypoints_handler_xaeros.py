@@ -5,6 +5,7 @@ Xaero's Minimap mod.
 """
 
 
+
 from .file_handler import FileHandler
 from .file_txt import TxtFile
 from .waypoints_directory_mod_handler import DirectoryWaypointsModHandler
@@ -211,12 +212,12 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
                 ' the exact way it appears in the Xaero\'s dir.'
             )
 
-        world_dir = os.path.join(self.base_directory_path, found_world)
+        world_dir = self._get_world_directory(world_name=found_world)
 
         waypoints = {
-            'overworld' : [],
-            'nether' : [],
-            'end' : []
+            'overworld' : {},
+            'nether' : {},
+            'end' : {}
         }
 
         for item in os.listdir(world_dir):
@@ -241,7 +242,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
                 if not formatted_wp_dict:
                     continue
 
-                waypoints[dimension].append(formatted_wp_dict)
+                waypoints[dimension][formatted_wp_dict['name']] = formatted_wp_dict
 
         return waypoints
 
@@ -309,38 +310,43 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         }
 
         for dimension in world_waypoints:
-            for dimension_waypoint in world_waypoints[dimension]:
+            for dimension_wp_name, dimension_wp_data in world_waypoints[dimension].items():
                 
-                wp_name = dimension_waypoint['name']
-
-                standardized_format[dimension][wp_name] = {
+                standardized_format[dimension][dimension_wp_name] = {
                     'coordinates' : {
-                        'x' : dimension_waypoint['x'],
-                        'y' : dimension_waypoint['y'],
-                        'z' : dimension_waypoint['z']
+                        'x' : dimension_wp_data['x'],
+                        'y' : dimension_wp_data['y'],
+                        'z' : dimension_wp_data['z']
                     },
-                    'color' : dimension_waypoint['color'],
-                    'visible' : dimension_waypoint['disabled']
+                    'color' : dimension_wp_data['color'],
+                    'visible' : dimension_wp_data['disabled']
                 }
 
         return standardized_format
 
 
     """
-    waypoint_format = {
-        'name' : line_data[1], 
-        'initials' : line_data[2],
-        'x' : line_data[3],
-        'y' : line_data[4],
-        'z' : line_data[5],
-        'color' : line_data[6],
-        'disabled' : False, # default
-        'type' : 0, # default
-        'set' : 'gui.xaero_default', # default
-        'rotate_on_tp' : False, # default
-        'tp_yaw' : 0, # default
-        'visibility_type' : 0, # default
-        'destination' : False # default
+    Xaero's waypoint dict format
+    {
+        'DIMENSION_NAME' : {
+            'WAYPOINT_NAME' : {
+                'name' : line_data[1], 
+                'initials' : line_data[2],
+                'x' : line_data[3],
+                'y' : line_data[4],
+                'z' : line_data[5],
+                'color' : line_data[6],
+                'disabled' : False, # default
+                'type' : 0, # default
+                'set' : 'gui.xaero_default', # default
+                'rotate_on_tp' : False, # default
+                'tp_yaw' : 0, # default
+                'visibility_type' : 0, # default
+                'destination' : False # default
+            },
+            ...
+        },
+        ...
     }
     """
     def convert_from_standard_to_mod(
@@ -365,30 +371,100 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
                     waypoint_name=wp_name
                 )
 
-        combined_waypoints = {**existing_waypoints, **wps_to_add}
+        if testing:
+
+            print('>>>>> existing waypoints')
+            for wp_name in existing_waypoints['overworld'].keys():
+                print(wp_name)
+
+            print('>>>>> to add waypoints')
+            for wp_name in wps_to_add['overworld'].keys():
+                print(wp_name)
+
+        combined_waypoints = self._merge_dicts(existing_waypoints, wps_to_add)
 
         if testing:
-            from json import dumps
-            print(dumps(combined_waypoints, indent=2))
-            return False
+            print('>>>>> combined waypoints')
+            for wp_name in combined_waypoints['overworld'].keys():
+                print(wp_name)
+
+            print('>>>>> existing waypoints')
+            for wp_name in existing_waypoints['overworld'].keys():
+                print(wp_name)
+
+            print('>>>>> to add waypoints')
+            for wp_name in wps_to_add['overworld'].keys():
+                print(wp_name)
         
-        raise NotImplementedError()
+
+        return  self._add_waypoints_to_mod(
+                    world_name=world_name,
+                    waypoints=combined_waypoints,
+                    testing=True
+                )
 
 
     def _add_waypoints_to_mod(self, 
                               world_name: str, 
-                              waypoints: dict
+                              waypoints: dict,
+                              testing : bool = False
     ) -> bool:
-        raise NotImplementedError()
+        
+        BASE_PATH = os.getcwd()
 
+        if testing:
+            dir_path = os.path.join(
+                BASE_PATH, 
+                'minecraft-waypoint-converter',
+                'data',
+                'testing'
+            )
+        else:
+            raise NotImplementedError()
+            dir_path = self._get_world_directory(world_name=world_name)
+        
+        output_files : dict[str, FileHandler] = {
+            'overworld' : FileHandler.exact_path(
+                full_path=os.path.join(dir_path, 'dim%0', 'mw$default_1.txt'),
+                extension=TxtFile
+            ),
+            'nether' : FileHandler.exact_path(
+                full_path=os.path.join(dir_path, 'dim%-1', 'mw$default_1.txt'),
+                extension=TxtFile
+            ),
+            'end' : FileHandler.exact_path(
+                full_path=os.path.join(dir_path, 'dim%1', 'mw$default_1.txt'),
+                extension=TxtFile
+            )
+        }
+        
+        from json import dumps
+        for dimension, dimension_waypoints in waypoints.items():
+
+            print(f'>>>>> Handling {dimension}...')
+
+            print(dumps(dimension_waypoints, indent=2))
+
+            dimension : str
+
+            write_successful = self._write_to_waypoint_file(
+                waypoint_file=output_files[dimension],
+                mod_formatted_waypoints=dimension_waypoints
+            )
+
+            if write_successful:
+                print_script_message(f'{dimension.title()} waypoints written.')
+            else:
+                print_script_message(f'Failure writting {dimension.title()} waypoints.')
 
 
     ####################################################################
     #####          DirectoryWaypointsModHandler Overrides          #####
     ####################################################################
 
-    def get_world_directory(self, world_name : str) -> str:
-        raise NotImplementedError()
+    def _get_world_directory(self, world_name : str) -> str:
+
+        return os.path.join(self.base_directory_path, world_name)
     
 
 
@@ -419,3 +495,56 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         }
 
         return xaeros_dict
+    
+
+    def _write_to_waypoint_file(
+            self,
+            waypoint_file : FileHandler,
+            mod_formatted_waypoints : dict
+        ) -> bool:
+
+        lines_to_write = self._get_headers_(waypoint_file=waypoint_file)
+
+        for wp_name, wp_data in mod_formatted_waypoints.items():
+
+            print(f'>>> handling {wp_name}')
+
+            line_format = \
+                f'waypoint:{wp_name}:{wp_data['initials']}:{wp_data['x']}:' \
+                f'{wp_data['y']}:{wp_data['z']}:{wp_data['color']}:' \
+                f'{str(wp_data['disabled']).lower()}:{wp_data['type']}:{wp_data['set']}:' \
+                f'{str(wp_data['rotate_on_tp']).lower()}:{wp_data['tp_yaw']}:' \
+                f'{wp_data['visibility_type']}:{str(wp_data['destination']).lower()}'.strip()
+            
+            lines_to_write.append(line_format)
+
+            print(line_format)
+
+        return waypoint_file.write(data=lines_to_write)       
+        
+
+    def _get_headers_(
+            self,
+            waypoint_file : FileHandler,
+        ) -> list[str]:
+
+        if waypoint_file.is_empty():
+            return []
+        
+        file_lines : list[str] = waypoint_file.read()
+
+        return [line.strip() for line in file_lines if not line.startswith('waypoint')]
+    
+
+    # method used
+    # https://stackoverflow.com/a/7205107
+    def _merge_dicts(self, dict1: dict, dict2: dict, path=[]):
+        for key in dict2:
+            if key in dict1:
+                if isinstance(dict1[key], dict) and isinstance(dict2[key], dict):
+                    self._merge_dicts(dict1[key], dict2[key], path + [str(key)])
+                elif dict1[key] != dict2[key]:
+                    raise Exception('Conflict at ' + '.'.join(path + [str(key)]))
+            else:
+                dict1[key] = dict2[key]
+        return dict1

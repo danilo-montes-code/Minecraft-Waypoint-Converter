@@ -223,7 +223,8 @@ def convert_waypoints(
 
     standard_file = StandardWorldWaypoints(
         world_name=world_name,
-        world_type=world_type
+        world_type=world_type,
+        mod_name=from_mod
     )
     
     
@@ -244,13 +245,6 @@ def convert_waypoints(
         world_name=to_mod_world_name,
         testing=True
     )
-
-    wps = standard_file.read_waypoints()
-
-    print('From standard yaml file.')
-    for dimension, wps in wps.items():
-        for wp_name in wps:
-            print(wp_name)
 
     return conversion_successful
 
@@ -388,8 +382,8 @@ def main() -> None:
         #     print(wp_name)
 
         for dimension in wps_xaeros.keys():
-            for wp in wps_xaeros[dimension]:
-                print(wp['name'])
+            for wp in wps_xaeros[dimension].keys():
+                print(wp)
 
 
 

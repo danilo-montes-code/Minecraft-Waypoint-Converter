@@ -271,12 +271,16 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
             print(dumps(combined_waypoints, indent=2))
             return False
         
-        raise NotImplementedError()
+        return  self._add_waypoints_to_mod(
+                    world_name=world_name,
+                    waypoints=combined_waypoints
+                )
 
     
     def _add_waypoints_to_mod(self, 
                               world_name: str, 
-                              waypoints: dict
+                              waypoints: dict,
+                              testing : bool = False
         ) -> bool:
         raise NotImplementedError()
 
