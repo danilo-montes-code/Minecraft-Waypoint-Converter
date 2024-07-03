@@ -139,6 +139,9 @@ def convert_waypoints(
 
     standard_file.write_waypoints(given_waypoints=standardized_waypoints)
 
+    # TODO create backup of to_mod data, stored in 
+    # minecraft-waypoint-converter\data\backups
+
     conversion_successful = to_mod_handler.convert_from_standard_to_mod(
         standard_data=standardized_waypoints,
         world_name=to_mod_world_name

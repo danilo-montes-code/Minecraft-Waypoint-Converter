@@ -405,8 +405,6 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
                               world_name: str, 
                               waypoints: dict
     ) -> bool:
-        
-        BASE_PATH = os.getcwd()
 
         dir_path = self._get_world_directory(world_name=world_name)
         
