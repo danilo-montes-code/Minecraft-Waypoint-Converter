@@ -351,8 +351,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
     def convert_from_standard_to_mod(
         self, 
         standard_data : dict,
-        world_name : str,
-        testing : bool = False
+        world_name : str
     ) -> bool:
         
         existing_waypoints = self._get_world_waypoints(world_name=world_name)
@@ -398,29 +397,18 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
 
         return  self._add_waypoints_to_mod(
                     world_name=world_name,
-                    waypoints=combined_waypoints,
-                    testing=True
+                    waypoints=combined_waypoints
                 )
 
 
     def _add_waypoints_to_mod(self, 
                               world_name: str, 
-                              waypoints: dict,
-                              testing : bool = False
+                              waypoints: dict
     ) -> bool:
         
         BASE_PATH = os.getcwd()
 
-        if testing:
-            dir_path = os.path.join(
-                BASE_PATH, 
-                'minecraft-waypoint-converter',
-                'data',
-                'testing'
-            )
-        else:
-            raise NotImplementedError()
-            dir_path = self._get_world_directory(world_name=world_name)
+        dir_path = self._get_world_directory(world_name=world_name)
         
         output_files : dict[str, FileHandler] = {
             'overworld' : FileHandler.exact_path(
@@ -460,6 +448,11 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
                 print_script_message(f'Failure writing {dimension.title()} waypoints.')
 
         return not error_in_write
+
+
+    def change_base_dir(self, new_base_dir_path : str) -> None:
+        self.base_directory_path = new_base_dir_path
+        return
 
 
 

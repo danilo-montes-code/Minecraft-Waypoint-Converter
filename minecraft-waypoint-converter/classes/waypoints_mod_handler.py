@@ -252,8 +252,7 @@ class WaypointsModHandler(ABC):
     def convert_from_standard_to_mod(
         self, 
         standard_data : dict,
-        world_name : str,
-        testing : bool = False
+        world_name : str    
     ) -> bool:
         """
         Converts the standardized format to this mod's waypoint data.
@@ -299,4 +298,11 @@ class WaypointsModHandler(ABC):
         bool
             True,   if the waypoints were added successfully
             False,  otherwise
+        """
+
+    @abstractmethod
+    def convert_here(self) -> None:
+        """
+        Changes the base directory to the predefined directory
+        `minecraft-waypoint-converter/data/convert`
         """

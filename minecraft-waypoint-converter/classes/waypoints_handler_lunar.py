@@ -243,8 +243,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
     def convert_from_standard_to_mod(
             self, 
             standard_data : dict, 
-            world_name : str,
-            testing : bool = False
+            world_name : str
         ) -> bool:
         
         existing_waypoints = self._get_world_waypoints(world_name=world_name)
@@ -266,10 +265,8 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
 
         combined_waypoints = {**existing_waypoints, **wps_to_add}
 
-        if testing:
-            from json import dumps
-            print(dumps(combined_waypoints, indent=2))
-            return False
+        from json import dumps
+        print(dumps(combined_waypoints, indent=2))
         
         return  self._add_waypoints_to_mod(
                     world_name=world_name,
@@ -279,10 +276,14 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
     
     def _add_waypoints_to_mod(self, 
                               world_name: str, 
-                              waypoints: dict,
-                              testing : bool = False
+                              waypoints: dict
         ) -> bool:
         raise NotImplementedError()
+
+
+    def change_path(self, new_path : str) -> None:
+        self.file_path = new_path
+        return
 
 
 

@@ -13,6 +13,8 @@ from .waypoints_mod_handler import WaypointsModHandler
 
 from abc import abstractmethod
 from typing import Any
+from pathlib import Path
+import os
 
 
 
@@ -68,3 +70,31 @@ class FileWaypointsModHandler(WaypointsModHandler):
         Writes to the data held within the waypoints file.
         """
     
+    @abstractmethod
+    def change_path(self, new_path : str) -> None:
+        """
+        Changes the path to the file where waypoints are stored.
+
+        Parameters
+        ----------
+        new_path : str
+            the path to the file where all waypoints are stored
+        """
+
+    def convert_here(self) -> None:
+        """
+        Changes the path to the file to the predefined
+        `minecraft-waypoint-converter/data/convert/waypoints.json`
+        """
+
+        self.change_path(
+            new_path=Path(
+                os.path.join(
+                    os.getcwd(),
+                    'minecraft-waypoint-converter',
+                    'data',
+                    'convert-here',
+                    'waypoints.json'
+                )
+            )
+        )

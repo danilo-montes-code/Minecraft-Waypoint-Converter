@@ -12,7 +12,8 @@ from .waypoints_mod_handler import WaypointsModHandler
 
 from abc import abstractmethod
 from typing import Any
-
+from pathlib import Path
+import os
 
 
 
@@ -62,3 +63,32 @@ class DirectoryWaypointsModHandler(WaypointsModHandler):
         str
             the path of the directory
         """
+
+
+    @abstractmethod
+    def change_base_dir(self, new_base_dir_path : str) -> None:
+        """
+        Changes the base directory path where waypoints are stored.
+
+        Parameters
+        ----------
+        new_base_dir_path : str
+            the path to the new directory where all waypoints are stored
+        """
+    
+    def convert_here(self) -> None:
+        """
+        Changes the base directory to the predefined directory
+        `minecraft-waypoint-converter/data/convert`
+        """
+
+        self.change_base_dir(
+            new_base_dir_path=Path(
+                os.path.join(
+                    os.getcwd(),
+                    'minecraft-waypoint-converter',
+                    'data',
+                    'convert-here'
+                )
+            )
+        )

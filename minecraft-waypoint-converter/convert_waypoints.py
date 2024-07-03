@@ -12,6 +12,8 @@ Dependencies:
 from classes import *
 from classes.waypoints_mod_handler import WaypointsModHandler
 
+import argparse
+
 import os, json, sys
 from pathlib import Path
 
@@ -183,7 +185,16 @@ def get_world_info(mod_name : str, mod_world_name : str) -> tuple[str, bool]:
 #####                            Driver                            #####
 ########################################################################
 
-def run_driver() -> None:
+def run_driver(convert_here : bool) -> None:
+    """
+    Runs the convertion functionality of the script.
+
+    Parameters
+    ----------
+    convert_here : bool
+        True,   if the user wishes to convert files within this dir
+        False,  otherwise
+    """
 
     world_name = get_world_name()
 
@@ -203,6 +214,10 @@ def run_driver() -> None:
             f'Given world not in {to_mod}'
         )
         return
+    
+    if convert_here:
+        MOD_CLASSES[from_mod].convert_here()
+        MOD_CLASSES[to_mod].convert_here()
 
     if convert_waypoints(
         from_mod=from_mod,
@@ -223,125 +238,117 @@ def run_driver() -> None:
 #####                            Main                              #####
 ########################################################################
 
-def determine_options(number_max : int) -> int:
+def init_parser() -> argparse.Namespace:
+    """
+    Initializes the command line argument parser.
 
-    if len(sys.argv) == 1:
-        return 0
+    Returns
+    -------
+    argparse.Namespace
+        the argument parser object that has been instantiated
+    """
 
-    elif len(sys.argv) == 2:
+    parser = argparse.ArgumentParser(
+        description='Converts waypoints between Minecraft mods'
+    )
 
-        try:
-            option = int(sys.argv[1])
-            if option < 1 or option > number_max:
-                raise IndexError
-            
-            return option
+    parser.add_argument(
+        '--convert-here',
+        action='store_true'
+    ) 
 
-        except ValueError:
-            print('Given choice is not a number.\n')
-
-        except IndexError:
-            print('Given choice is not in the range of options.\n')
-
-    else:
-        print('Incorrect number of args')
-        
-    return -1
-
-
-def main() -> None: 
-
-    option = determine_options(6)
-
-    if option == -1:
-        return
+    return parser.parse_args()
     
 
+def main() -> None: 
+    
+    args = init_parser()
+
     # default functionality of script
-    if option == 0:
-        run_driver()
+    run_driver(args.convert_here)
 
-        wps_lunar = MOD_CLASSES['lunar client']._get_world_waypoints(
-            world_name="kidnamedsoub"
-        )
+    # wps_lunar = MOD_CLASSES['lunar client']._get_world_waypoints(
+    #     world_name="kidnamedsoub"
+    # )
 
-        wps_xaeros = MOD_CLASSES['xaero\'s minimap']._get_world_waypoints(
-            world_name="kidnamedsoub"
-        )
+    # wps_xaeros = MOD_CLASSES['xaero\'s minimap']._get_world_waypoints(
+    #     world_name="kidnamedsoub"
+    # )
 
-        # print('Separate lunar and xaeros lists')
-        # for wp_name in wps_lunar.keys():
-        #     print(wp_name)
+    # print('Separate lunar and xaeros lists')
+    # for wp_name in wps_lunar.keys():
+    #     print(wp_name)
 
-        # for dimension in wps_xaeros.keys():
-        #     for wp in wps_xaeros[dimension].keys():
-        #         print(wp)
-
+    # for dimension in wps_xaeros.keys():
+    #     for wp in wps_xaeros[dimension].keys():
+    #         print(wp)
 
 
-    # get lunar wps file
-    elif option == 1:
-        MOD_CLASSES['lunar client'].print_waypoints()
- 
+    '''
+        # get lunar wps file
+        elif option == 1:
+            MOD_CLASSES['lunar client'].print_waypoints()
+    
 
-    # get kidnamedsoub wps
-    elif option == 2:
-        wps_lunar = MOD_CLASSES['lunar client']._get_world_waypoints(
-            world_name="kidnamedsoub"
-        )
-
-        wps_xaeros = MOD_CLASSES['xaero\'s minimap']._get_world_waypoints(
-            world_name="kidnamedsoub"
-        )
-
-        print('Separate lunar and xaeros lists')
-        for wp_name in wps_lunar.keys():
-            print(wp_name)
-
-        for dimension in wps_xaeros.keys():
-            for wp in wps_xaeros[dimension].keys():
-                print(wp)
-        # print(
-        #     json.dumps(
-        #         wps, 
-        #         indent=2
-        #     )
-        # )
-
-
-    # choosing from multiple lunar worlds
-    elif option == 3:
-        print(
-            MOD_CLASSES['lunar client']._get_specific_world_name(
-                '2020'
+        # get kidnamedsoub wps
+        elif option == 2:
+            wps_lunar = MOD_CLASSES['lunar client']._get_world_waypoints(
+                world_name="kidnamedsoub"
             )
-        )
 
-
-    # xaeros
-    elif option == 4:
-        xaeros = MOD_CLASSES['xaero\'s minimap']
-        print(
-            json.dumps(
-                xaeros._get_world_waypoints('soub'),
-                indent=2
+            wps_xaeros = MOD_CLASSES['xaero\'s minimap']._get_world_waypoints(
+                world_name="kidnamedsoub"
             )
-        )
+
+            print('Separate lunar and xaeros lists')
+            for wp_name in wps_lunar.keys():
+                print(wp_name)
+
+            for dimension in wps_xaeros.keys():
+                for wp in wps_xaeros[dimension].keys():
+                    print(wp)
+            # print(
+            #     json.dumps(
+            #         wps, 
+            #         indent=2
+            #     )
+            # )
 
 
-    elif option == 5:
-        xaeros = MOD_CLASSES['xaero\'s minimap']
-        print(
-            json.dumps(
-                xaeros.convert_from_mod_to_standard('soub'),
-                indent=2
+        # choosing from multiple lunar worlds
+        elif option == 3:
+            print(
+                MOD_CLASSES['lunar client']._get_specific_world_name(
+                    '2020'
+                )
             )
-        )
 
 
-    elif option == 6:
-        pass
+        # xaeros
+        elif option == 4:
+            xaeros = MOD_CLASSES['xaero\'s minimap']
+            print(
+                json.dumps(
+                    xaeros._get_world_waypoints('soub'),
+                    indent=2
+                )
+            )
 
+
+        elif option == 5:
+            xaeros = MOD_CLASSES['xaero\'s minimap']
+            print(
+                json.dumps(
+                    xaeros.convert_from_mod_to_standard('soub'),
+                    indent=2
+                )
+            )
+
+
+        elif option == 6:
+            pass
+            
+    '''
 
     # TODO cmd line args for FROM TO formats
     # ex py ... .py lunar xaeros
