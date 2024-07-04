@@ -53,7 +53,7 @@ class FileWaypointsModHandler(WaypointsModHandler):
 
 
     @abstractmethod
-    def read_waypoints(self) -> dict:
+    def read_full_waypoint_file(self) -> dict:
         """
         Reads and returns the data held within the waypoints file.
 
@@ -65,7 +65,7 @@ class FileWaypointsModHandler(WaypointsModHandler):
         
 
     @abstractmethod
-    def write(self) -> None:
+    def write_to_full_waypoint_file(self) -> None:
         """
         Writes to the data held within the waypoints file.
         """

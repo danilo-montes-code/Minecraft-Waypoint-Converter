@@ -453,6 +453,44 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         return
 
 
+    def create_backup(self, world_name : str) -> None:
+
+        world_dir = self._get_world_directory(world_name=world_name)
+
+        for item in os.listdir(world_dir):
+
+            item_path = os.path.join(world_dir, item)
+            if not os.path.isdir(item_path):
+                continue
+
+            # read file with FileHandler
+            waypoint_file = FileHandler.exact_path(
+                full_path=os.path.join(item_path, 'mw$default_1.txt'),
+                extension=TxtFile
+            )
+
+            waypoint_file_data = waypoint_file.read()
+
+            backup_file = FileHandler.exact_path(
+                full_path=Path(
+                    os.getcwd(),
+                    'minecraft-waypoint-converter',
+                    'data',
+                    'backups',
+                    'xaero\'s minimap',
+                    world_name,
+                    item,
+                    'mw$default_1.txt'
+                ),
+                extension=TxtFile
+            )
+
+            if not backup_file.write(data = waypoint_file_data):
+                print_script_message('Error creating lunar client backup file.')
+
+        return
+
+
 
     ####################################################################
     #####          DirectoryWaypointsModHandler Overrides          #####

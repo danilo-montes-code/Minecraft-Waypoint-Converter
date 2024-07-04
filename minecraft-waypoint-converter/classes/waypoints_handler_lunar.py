@@ -7,6 +7,7 @@ Lunar Client's waypoint mod.
 
 from .waypoints_file_mod_handler import FileWaypointsModHandler
 from .file_json import JSONFile
+from .file_handler import FileHandler
 from .useful_methods import (print_script_message, 
                              select_list_options)
 
@@ -98,7 +99,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
                 extension=JSONFile
             )
 
-        data : dict = self.waypoints_file.read()
+        data : dict = self.read_full_waypoint_file()
         self.waypoint_list : dict = data['waypoints']
 
 
@@ -274,10 +275,12 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
                 )
 
     
-    def _add_waypoints_to_mod(self, 
-                              world_name: str, 
-                              waypoints: dict
+    def _add_waypoints_to_mod(
+            self, 
+            world_name: str, 
+            waypoints: dict
         ) -> bool:
+
         raise NotImplementedError()
 
 
@@ -286,16 +289,36 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         return
 
 
+    def create_backup(self, world_name : str) -> None:
+        data : dict = self.read_full_waypoint_file()
+        backup_file = FileHandler.exact_path(
+            full_path=Path(
+                os.getcwd(),
+                'minecraft-waypoint-converter',
+                'data',
+                'backups',
+                'lunar client',
+                'waypoints.json'
+            ),
+            extension=JSONFile
+        )
+
+        if not backup_file.write(data=data):
+            print_script_message('Error creating lunar client backup file.')
+
+        return
+
+
 
     ####################################################################
     #####            FileWaypointsModHandler Overrides             #####
     ####################################################################
 
-    def read_waypoints(self) -> dict:
+    def read_full_waypoint_file(self) -> dict:
         return self.waypoints_file.read()
     
 
-    def write(self, data : Any) -> bool:
+    def write_to_full_waypoint_file(self, data : Any) -> bool:
         return self.waypoints_file.write(data)
 
 
