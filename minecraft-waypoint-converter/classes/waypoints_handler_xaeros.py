@@ -489,8 +489,8 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
             'x' : int(standard_wp_dict['coordinates']['x']),
             'y' : int(standard_wp_dict['coordinates']['y']),
             'z' : int(standard_wp_dict['coordinates']['z']),
-            'color' : standard_wp_dict['color'],
-            'disabled' : standard_wp_dict['visible'],
+            'color' : int(standard_wp_dict['color']),
+            'disabled' : not bool(standard_wp_dict['visible']),
             'type' : 0, # default
             'set' : 'gui.xaero_default', # default
             'rotate_on_tp' : False, # default
