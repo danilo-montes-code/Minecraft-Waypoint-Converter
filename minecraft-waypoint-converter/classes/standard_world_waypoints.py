@@ -9,7 +9,6 @@ a standardized format.
 from .file_handler import FileHandler
 from .file_yaml import YAMLFile
 
-from typing import Any
 import os
 
 

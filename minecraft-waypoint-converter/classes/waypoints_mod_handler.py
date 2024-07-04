@@ -8,7 +8,6 @@ Class is written as an abstract class.
 
 
 from abc import ABC, abstractmethod
-from typing import Any
 
 
 
@@ -126,25 +125,6 @@ class WaypointsModHandler(ABC):
         -------
         dict
             a dict containing the world's waypoints'
-        """
-
-
-    @abstractmethod
-    def _world_in_list(self, world_name : str) -> bool:
-        """
-        Determines if the mod has waypoints created for the given
-        world/server.
-
-        Parameters
-        ----------
-        world_name : str
-            the name of the world/server to check waypoints for
-
-        Returns
-        -------
-        bool
-            True,   if the mod has waypoints for the world/server
-            False,  otherwise
         """
 
 

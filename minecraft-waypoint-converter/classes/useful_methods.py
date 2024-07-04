@@ -120,3 +120,17 @@ def select_list_options(options : list[str]) -> int:
     except IndexError:
         print('Given choice is not in the range of options.\n')
         return select_list_options(options)
+    
+
+# method used
+# https://stackoverflow.com/a/7205107
+def merge_dicts(dict1: dict, dict2: dict, path=[]):
+    for key in dict2:
+        if key in dict1:
+            if isinstance(dict1[key], dict) and isinstance(dict2[key], dict):
+                merge_dicts(dict1[key], dict2[key], path + [str(key)])
+            elif dict1[key] != dict2[key]:
+                raise Exception('Conflict at ' + '.'.join(path + [str(key)]))
+        else:
+            dict1[key] = dict2[key]
+    return dict1

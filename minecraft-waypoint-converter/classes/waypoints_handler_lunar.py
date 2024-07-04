@@ -9,7 +9,8 @@ from .waypoints_file_mod_handler import FileWaypointsModHandler
 from .file_json import JSONFile
 from .file_handler import FileHandler
 from .useful_methods import (print_script_message, 
-                             select_list_options)
+                             select_list_options,
+                             merge_dicts)
 
 from typing import Any
 import os
@@ -141,11 +142,6 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
             )
 
         return self.waypoint_list[found_world][""]
-    
-    
-    def _world_in_list(self, world_name: str) -> bool:
-        # TODO is this method really needed?
-        return False
 
 
     def _get_specific_world_name(self, search_name: str) -> str | None:
@@ -264,10 +260,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
                     dimension=dimension
                 )
 
-        combined_waypoints = {**existing_waypoints, **wps_to_add}
-
-        from json import dumps
-        print(dumps(combined_waypoints, indent=2))
+        combined_waypoints = merge_dicts(existing_waypoints, wps_to_add)
         
         return  self._add_waypoints_to_mod(
                     world_name=world_name,
@@ -281,7 +274,21 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
             waypoints: dict
         ) -> bool:
 
-        raise NotImplementedError()
+        error_in_write = False
+
+        full_wp_data = self.read_full_waypoint_file()
+
+        full_wp_data['waypoints'][world_name][""] = waypoints
+
+        write_successful = self.write_to_full_waypoint_file(data=full_wp_data)
+
+        if write_successful:
+            print_script_message(f'Waypoints written.')
+        else:
+            error_in_write = True
+            print_script_message(f'Failure writing waypoints.')
+
+        return not error_in_write
 
 
     def change_path(self, new_path : str) -> None:
@@ -340,6 +347,21 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
             standard_wp_dict : dict, 
             dimension : str
         ) -> dict:
+        """
+        Creates the waypoint dict in the format of Lunar Client.
+
+        Parameters
+        ----------
+        standard_wp_dict : dict
+            the standardized waypoint data
+        dimension : str
+            the dimension currently being handled
+
+        Returns
+        -------
+        dict
+            the waypoints formatted in the way of Lunar Client
+        """
         
         dimension_int : int
 
@@ -361,14 +383,14 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
 
         lunar_dict = {
             'location' : {
-                'x' : standard_wp_dict['coordinates']['x'],
-                'y' : standard_wp_dict['coordinates']['y'],
-                'z' : standard_wp_dict['coordinates']['z']
+                'x' : float(standard_wp_dict['coordinates']['x']),
+                'y' : float(standard_wp_dict['coordinates']['y']),
+                'z' : float(standard_wp_dict['coordinates']['z'])
             },
-            'visible' : standard_wp_dict['visible'],
-            'dimension' : dimension_int,
+            'visible' : bool(standard_wp_dict['visible']),
+            'dimension' : int(dimension_int),
             'color' : {
-                'value' : standard_wp_dict['color']
+                'value' : int(standard_wp_dict['color'])
             },
             'showBeam' : True,
             'showText' : True

@@ -10,9 +10,9 @@ from .file_handler import FileHandler
 from .file_txt import TxtFile
 from .waypoints_directory_mod_handler import DirectoryWaypointsModHandler
 from .useful_methods import (print_script_message, 
-                             select_list_options)
+                             select_list_options,
+                             merge_dicts)
 
-from typing import Type, Any
 from pathlib import Path
 import os
 
@@ -68,12 +68,10 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         """
         if not different_directory_path:
             super().__init__(
-                base_directory_path=Path(
-                    os.path.join(
-                        os.getenv('APPDATA'),
-                        '.minecraft',
-                        'XaeroWaypoints'
-                    )
+                base_directory_path=os.path.join(
+                    os.getenv('APPDATA'),
+                    '.minecraft',
+                    'XaeroWaypoints'
                 ), 
                 extension_of_files=TxtFile
             )
@@ -227,7 +225,6 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
 
             dimension = get_dimension_name(item)
 
-            # read file with FileHandler
             waypoint_file = FileHandler.exact_path(
                 full_path=os.path.join(item_path, 'mw$default_1.txt'),
                 extension=TxtFile
@@ -244,11 +241,6 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
                 waypoints[dimension][formatted_wp_dict['name']] = formatted_wp_dict
 
         return waypoints
-
-
-    def _world_in_list(self, world_name : str) -> bool:
-        # TODO is this method really needed?
-        return False
 
 
     def _get_specific_world_name(self, search_name : str) -> str | None:
@@ -364,36 +356,20 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         for dimension, waypoints in standard_data.items():
             for wp_name, wp_data in waypoints.items():
 
+                # remove duplicate waypoint names, despite Xaero's
+                # support for duplicate waypoint names, to prevent
+                # undesired waypoint duplication if converted multiple
+                # times
+                if wp_name in existing_waypoints:
+                    print_script_message(f'Waypoint with name "{wp_name}" already exists, skipping...')
+                    continue
+
                 wps_to_add[dimension][wp_name] = self._create_mod_waypoint_dict(
                     standard_wp_dict=wp_data,
                     waypoint_name=wp_name
                 )
 
-        # if testing:
-
-        #     print('>>>>> existing waypoints')
-        #     for wp_name in existing_waypoints['overworld'].keys():
-        #         print(wp_name)
-
-        #     print('>>>>> to add waypoints')
-        #     for wp_name in wps_to_add['overworld'].keys():
-        #         print(wp_name)
-
-        combined_waypoints = self._merge_dicts(existing_waypoints, wps_to_add)
-
-        # if testing:
-        #     print('>>>>> combined waypoints')
-        #     for wp_name in combined_waypoints['overworld'].keys():
-        #         print(wp_name)
-
-        #     print('>>>>> existing waypoints')
-        #     for wp_name in existing_waypoints['overworld'].keys():
-        #         print(wp_name)
-
-        #     print('>>>>> to add waypoints')
-        #     for wp_name in wps_to_add['overworld'].keys():
-        #         print(wp_name)
-        
+        combined_waypoints = merge_dicts(existing_waypoints, wps_to_add)
 
         return  self._add_waypoints_to_mod(
                     world_name=world_name,
@@ -425,12 +401,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
 
         error_in_write = False
 
-        # from json import dumps
         for dimension, dimension_waypoints in waypoints.items():
-
-            # print(f'>>>>> Handling {dimension}...')
-
-            # print(dumps(dimension_waypoints, indent=2))
 
             dimension : str
 
@@ -541,8 +512,6 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
 
         for wp_name, wp_data in mod_formatted_waypoints.items():
 
-            # print(f'>>> handling {wp_name}')
-
             line_format = \
                 f'waypoint:{wp_name}:{wp_data['initials']}:{wp_data['x']}:' \
                 f'{wp_data['y']}:{wp_data['z']}:{wp_data['color']}:' \
@@ -551,8 +520,6 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
                 f'{wp_data['visibility_type']}:{str(wp_data['destination']).lower()}'.strip()
             
             lines_to_write.append(line_format)
-
-            # print(line_format)
 
         return waypoint_file.write(data=lines_to_write)       
         
@@ -568,18 +535,4 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         file_lines : list[str] = waypoint_file.read()
 
         return [line.strip() for line in file_lines if not line.startswith('waypoint')]
-    
-
-    # method used
-    # https://stackoverflow.com/a/7205107
-    def _merge_dicts(self, dict1: dict, dict2: dict, path=[]):
-        for key in dict2:
-            if key in dict1:
-                if isinstance(dict1[key], dict) and isinstance(dict2[key], dict):
-                    self._merge_dicts(dict1[key], dict2[key], path + [str(key)])
-                elif dict1[key] != dict2[key]:
-                    raise Exception('Conflict at ' + '.'.join(path + [str(key)]))
-            else:
-                dict1[key] = dict2[key]
-        return dict1
     

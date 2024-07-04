@@ -11,7 +11,6 @@ from .file_extension import FileExtension
 from .waypoints_mod_handler import WaypointsModHandler
 
 from abc import abstractmethod
-from typing import Any
 from pathlib import Path
 import os
 

@@ -54,17 +54,17 @@ For example, Xaero's Minimap stores waypoints in a folder that has the name of t
 
 ## Mod Features
 
-| Mod Features                          | Lunar Client | Xaero's Minimap |
-| :------------------------------------ | :----------: | :-------------: |
-| Name waypoint                         | ✓            | ✓              |
-| Specify waypoint dimension            | ✓            | ✓              |
-| Color waypoint                        | ✓            | ✓              |
-| Toggle waypoint visibility            | ✓            | ✓              |
-| Create waypoints with duplicate names |              | ✓              |
-| Show waypoint beam in game            | ✓            |                |
-| Show waypoint text in game            | ✓            |                |
+| Mod Features                           | Lunar Client | Xaero's Minimap |
+| :------------------------------------- | :----------: | :-------------: |
+| Name waypoint                          | ✓            | ✓              |
+| Specify waypoint dimension             | ✓            | ✓              |
+| Color waypoint                         | ✓            | ✓              |
+| Toggle waypoint visibility             | ✓            | ✓              |
+| Create waypoints with duplicate names* |              | ✓              |
+| Show waypoint beam in game             | ✓            |                |
+| Show waypoint text in game             | ✓            |                |
 
-
+\* Note that despite support for waypoints with duplicate names, this tool skips any duplicate named waypoints to avoid undesirably duplicated waypoints when converting multiple times between the same two mods
 
 # Planned Features
 __v2__
