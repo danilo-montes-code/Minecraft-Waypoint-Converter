@@ -74,20 +74,3 @@ class DirectoryWaypointsModHandler(WaypointsModHandler):
         new_base_dir_path : str
             the path to the new directory where all waypoints are stored
         """
-    
-    def convert_here(self) -> None:
-        """
-        Changes the base directory to the predefined directory
-        `minecraft-waypoint-converter/data/convert`
-        """
-
-        self.change_base_dir(
-            new_base_dir_path=Path(
-                os.path.join(
-                    os.getcwd(),
-                    'minecraft-waypoint-converter',
-                    'data',
-                    'convert-here'
-                )
-            )
-        )

@@ -66,21 +66,17 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
             the path to the directory where Xaero's Minimap 
             stores its waypoints
         """
-        if not different_directory_path:
-            super().__init__(
-                base_directory_path=os.path.join(
-                    os.getenv('APPDATA'),
-                    '.minecraft',
-                    'XaeroWaypoints'
-                ), 
-                extension_of_files=TxtFile
-            )
 
-        else:
-            super().__init__(
-                base_directory_path=different_directory_path,
-                extension_of_files=TxtFile
-            )
+        dir_path = different_directory_path or os.path.join(
+            os.getenv('APPDATA'),
+            '.minecraft',
+            'XaeroWaypoints'
+        )
+
+        super().__init__(
+            base_directory_path = dir_path, 
+            extension_of_files=TxtFile
+        )
 
 
 

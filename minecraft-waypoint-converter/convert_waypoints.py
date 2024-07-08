@@ -24,12 +24,9 @@ from pathlib import Path
 #####                          Constants                           #####
 ########################################################################
 
-HOME_DIR = Path.home()
-APP_DATA = Path(os.getenv('APPDATA'))
-
 MOD_CLASSES : dict[str, WaypointsModHandler] = {
-    'lunar client'      : LunarWaypointsHandler() or None,
-    'xaero\'s minimap'  : XaerosWaypointsHandler() or None
+    'lunar client'      : None,
+    'xaero\'s minimap'  : None
 }
 
 
@@ -216,10 +213,6 @@ def run_driver(convert_here : bool) -> None:
             f'Given world not in {to_mod}'
         )
         return
-    
-    if convert_here:
-        MOD_CLASSES[from_mod].convert_here()
-        MOD_CLASSES[to_mod].convert_here()
 
     if convert_waypoints(
         from_mod=from_mod,
@@ -262,9 +255,44 @@ def init_parser() -> argparse.Namespace:
     return parser.parse_args()
     
 
+def setup_classes(convert_here : bool) -> None:
+
+    if convert_here:
+
+        dir_path = os.path.join(
+            os.getcwd(),
+            'minecraft-waypoint-converter',
+            'data',
+            'convert-here'
+        ) if convert_here else None
+
+        MOD_CLASSES['lunar client'] = LunarWaypointsHandler(
+            different_file_path=os.path.join(
+                dir_path,
+                'lunar client',
+                'waypoints.json'
+            )
+        )
+        MOD_CLASSES['xaero\'s minimap'] = XaerosWaypointsHandler(
+            different_directory_path=os.path.join(
+                dir_path,
+                'xaero\'s minimap'
+            )
+        )
+
+
 def main() -> None: 
     
+    os.system('cls' if os.name == 'nt' else 'clear')
+    
     args = init_parser()
+
+    if args.convert_here:
+        print_script_message('Running script using mode: convert-here')
+    else:
+        print_script_message('Running script using mode: standard')
+        
+    setup_classes(args.convert_here)
 
     # default functionality of script
     run_driver(args.convert_here)

@@ -82,26 +82,28 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         different_file_path : str, optional
             the path to the file where Lunar Client stores its waypoints
         """
-        if not different_file_path:
-            super().__init__(
-                file_path = os.path.join(
-                    Path.home(), 
-                    '.lunarclient', 
-                    'settings', 
-                    'game',
-                    'waypoints.json'
-                ), 
-                extension=JSONFile
-            )
 
-        else:
-            super().__init__(
-                file_path=different_file_path, 
-                extension=JSONFile
-            )
+        file_path = different_file_path or os.path.join(
+            Path.home(), 
+            '.lunarclient', 
+            'settings', 
+            'game',
+            'waypoints.json'
+        )
 
-        data : dict = self.read_full_waypoint_file()
-        self.waypoint_list : dict = data['waypoints']
+        super().__init__(
+            file_path = file_path, 
+            extension=JSONFile
+        )
+
+        try:
+            data : dict = self.read_full_waypoint_file()
+            self.waypoint_list : dict = data['waypoints']
+
+        except TypeError:
+            # if the file is not found, do not create the waypoint list
+            print_script_message(f'No file found at {file_path}')
+            return None
 
 
 

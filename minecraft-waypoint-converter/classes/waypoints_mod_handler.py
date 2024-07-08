@@ -282,14 +282,6 @@ class WaypointsModHandler(ABC):
 
 
     @abstractmethod
-    def convert_here(self) -> None:
-        """
-        Changes the base directory to the predefined directory
-        `minecraft-waypoint-converter/data/convert`
-        """
-
-
-    @abstractmethod
     def create_backup(self, world_name : str) -> None:
         """
         Creates a backup of the waypoint data and stores it in
