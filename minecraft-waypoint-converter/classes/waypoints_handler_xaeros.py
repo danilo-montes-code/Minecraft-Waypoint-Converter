@@ -14,6 +14,7 @@ from .useful_methods import (print_script_message,
                              merge_dicts)
 
 from pathlib import Path
+from datetime import date
 import os
 
 
@@ -420,7 +421,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
 
 
     def change_base_dir(self, new_base_dir_path : str) -> None:
-        self.base_directory_path = new_base_dir_path
+        self.base_directory_path = os.path.join(new_base_dir_path, 'xaero\'s minimap')
         return
 
 
@@ -448,6 +449,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
                     'minecraft-waypoint-converter',
                     'data',
                     'backups',
+                    self.get_datetime(),
                     'xaero\'s minimap',
                     world_name,
                     item,
@@ -457,7 +459,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
             )
 
             if not backup_file.write(data = waypoint_file_data):
-                print_script_message('Error creating lunar client backup file.')
+                print_script_message('Error creating Xaero\'s Minimap backup file.')
 
         return
 

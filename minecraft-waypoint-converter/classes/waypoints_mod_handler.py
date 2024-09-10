@@ -8,7 +8,7 @@ Class is written as an abstract class.
 
 
 from abc import ABC, abstractmethod
-
+from datetime import datetime
 
 
 class WaypointsModHandler(ABC):
@@ -21,6 +21,8 @@ class WaypointsModHandler(ABC):
     waypoint_list : dict
         the list of all the waypoints in all the worlds/servers
         that the mod has created waypoints for
+    datetime : datetime.datetime
+        the date and time that the instance is created
     """
 
     def __init__(self) -> None: 
@@ -28,6 +30,7 @@ class WaypointsModHandler(ABC):
         Creates an instance of a WaypointsModHandler subclass.
         """
         self.waypoint_list = {}
+        self.datetime = datetime.now()
 
 
 
@@ -70,7 +73,6 @@ class WaypointsModHandler(ABC):
         str
             the type of the world
         """
-
 
 
     ####################################################################
@@ -285,7 +287,7 @@ class WaypointsModHandler(ABC):
     def convert_here(self) -> None:
         """
         Changes the base directory to the predefined directory
-        `minecraft-waypoint-converter/data/convert`
+        `minecraft-waypoint-converter/data/convert-here`
         """
 
 
@@ -300,3 +302,17 @@ class WaypointsModHandler(ABC):
         world_name : str
             the name of the world to save a backup of
         """
+
+
+
+    ####################################################################
+    #####                      Other Methods                       #####
+    ####################################################################
+
+    def get_datetime(self) -> str:
+        """
+        Gets the datetime from this instance and returns a 
+        human readable string with relevant information.
+        """
+
+        return self.datetime.strftime("%Y/%m/%d-%H:%M:%S")

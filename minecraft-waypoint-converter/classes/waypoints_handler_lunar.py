@@ -292,7 +292,11 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
 
 
     def change_path(self, new_path : str) -> None:
-        self.file_path = new_path
+        self.file_path = os.path.join(
+            new_path, 
+            'lunar client', 
+            'waypoints.json'
+        )
         return
 
 
@@ -304,6 +308,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
                 'minecraft-waypoint-converter',
                 'data',
                 'backups',
+                self.get_datetime(),
                 'lunar client',
                 'waypoints.json'
             ),
@@ -311,7 +316,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         )
 
         if not backup_file.write(data=data):
-            print_script_message('Error creating lunar client backup file.')
+            print_script_message('Error creating Lunar Client backup file.')
 
         return
 

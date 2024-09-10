@@ -205,6 +205,9 @@ def run_driver(convert_here : bool) -> None:
         'xaero\'s minimap'
     ))
 
+    # TODO v2 - user chooses from dropdown list, rather than getting the
+    # name of the world, for each mod
+    
     world_name_in_from_mod = get_world_file_name(world_name, from_mod)
     world_name_in_to_mod   = get_world_file_name(world_name, to_mod)
 
@@ -216,6 +219,8 @@ def run_driver(convert_here : bool) -> None:
             f'Given world not in {to_mod}'
         )
         return
+    
+    # TODO v2 end
     
     if convert_here:
         MOD_CLASSES[from_mod].convert_here()

@@ -80,6 +80,7 @@ class FileWaypointsModHandler(WaypointsModHandler):
             the path to the file where all waypoints are stored
         """
 
+
     def convert_here(self) -> None:
         """
         Changes the path to the file to the predefined
@@ -92,8 +93,7 @@ class FileWaypointsModHandler(WaypointsModHandler):
                     os.getcwd(),
                     'minecraft-waypoint-converter',
                     'data',
-                    'convert-here',
-                    'waypoints.json'
+                    'convert-here'
                 )
             )
         )
