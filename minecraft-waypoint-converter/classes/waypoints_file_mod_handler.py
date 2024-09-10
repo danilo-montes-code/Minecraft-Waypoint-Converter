@@ -69,6 +69,7 @@ class FileWaypointsModHandler(WaypointsModHandler):
         Writes to the data held within the waypoints file.
         """
     
+    
     @abstractmethod
     def change_path(self, new_path : str) -> None:
         """
