@@ -5,12 +5,15 @@ Converts Minecraft waypoints between various mods.
 
 Dependencies:
 * ruamel.yaml
+* amulet_nbt
+* argparse
 """
 
 
 
 from classes import *
 from classes.waypoints_mod_handler import WaypointsModHandler
+from classes.file_dat_minecraft import MinecraftDatFile
 
 import argparse
 
@@ -36,6 +39,9 @@ MOD_CLASSES : dict[str, WaypointsModHandler] = {
 ########################################################################
 
 def get_world_name() -> str:
+    """
+    Prompts the user to enter the name of the world to get waypoints from.
+    """
 
     return prompt_for_answer(
         'What is the name of the singleplayer world or multiplayer server IP?' \
@@ -121,8 +127,23 @@ def convert_waypoints(
 
     from_mod_handler = MOD_CLASSES[from_mod]
     to_mod_handler = MOD_CLASSES[to_mod]
+
+    create_backups(
+        from_mod_handler=from_mod_handler,
+        from_mod_world_name=from_mod_world_name,
+        to_mod_handler=to_mod_handler,
+        to_mod_world_name=to_mod_world_name
+    )
     
     world_name, world_type = get_world_info(from_mod, from_mod_world_name)
+
+    # TODO v2
+    # get waypoints from both mods, combine into one dict, save this dict
+    # to the standard yaml, then save to to_mod
+    # rather than only converting the from_mod into the standard yaml
+    
+
+    # TODO v2 end
 
     standard_file = StandardWorldWaypoints(
         world_name=world_name,
@@ -179,6 +200,26 @@ def get_world_info(mod_name : str, mod_world_name : str) -> tuple[str, bool]:
     return world_name, world_type
 
 
+def create_backups(
+    from_mod_handler : WaypointsModHandler,
+    from_mod_world_name : str,
+    to_mod_handler : WaypointsModHandler,
+    to_mod_world_name : str
+) -> bool:
+    """
+    Creates backups of the waypoint files.
+
+    Returns
+    -------
+    bool
+        True,   if the backup creations were successful
+        False,  otherwise
+    """
+
+    return  (from_mod_handler.create_backup(world_name=from_mod_world_name) 
+    and     to_mod_handler.create_backup(world_name=to_mod_world_name))
+
+
 
 ########################################################################
 #####                            Driver                            #####
@@ -195,8 +236,6 @@ def run_driver(convert_here : bool) -> None:
         False,  otherwise
     """
 
-    world_name = get_world_name()
-
     from_mod, to_mod = get_mod_names(mod_options=(
         'lunar client',
         'xaero\'s minimap'
@@ -204,7 +243,9 @@ def run_driver(convert_here : bool) -> None:
 
     # TODO v2 - user chooses from dropdown list, rather than getting the
     # name of the world, for each mod
-    
+
+    world_name = get_world_name()
+
     world_name_in_from_mod = get_world_file_name(world_name, from_mod)
     world_name_in_to_mod   = get_world_file_name(world_name, to_mod)
 
@@ -273,7 +314,7 @@ def setup_classes(convert_here : bool) -> None:
             'minecraft-waypoint-converter',
             'data',
             'convert-here'
-        ) if convert_here else None
+        )
 
         MOD_CLASSES['lunar client'] = LunarWaypointsHandler(
             different_file_path=os.path.join(
@@ -305,13 +346,31 @@ def main() -> None:
 
     # default functionality of script
     run_driver(args.convert_here)
-
-    # TODO cmd line args for FROM TO formats
-    # ex py ... .py lunar xaeros
     
     return
 
 
 
+def testing():
+
+    servers_file = MinecraftDatFile(
+        os.path.join(
+            os.getenv('APPDATA'),
+            '.minecraft',
+            'servers.dat'
+        )
+    )
+
+    data = servers_file.read()
+
+    for server in data['servers']:
+        print(f'{server['name']} (ip: {server['ip']})')
+
+    exit()
+
+
+
 if __name__ == "__main__":
+
+    # testing()
     main()

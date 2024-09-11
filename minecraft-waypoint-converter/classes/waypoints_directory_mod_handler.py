@@ -45,6 +45,7 @@ class DirectoryWaypointsModHandler(WaypointsModHandler):
         
         self.base_directory_path = base_directory_path
         self.extension_of_files = extension_of_files
+        super().__init__()
 
 
     @abstractmethod

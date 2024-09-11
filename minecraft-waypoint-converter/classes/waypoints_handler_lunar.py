@@ -8,6 +8,7 @@ Lunar Client's waypoint mod.
 from .waypoints_file_mod_handler import FileWaypointsModHandler
 from .file_json import JSONFile
 from .file_handler import FileHandler
+from .file_dat_minecraft import MinecraftDatFile
 from .useful_methods import (print_script_message, 
                              select_list_options,
                              merge_dicts)
@@ -130,7 +131,28 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
 
 
     def _get_worlds(self) -> list[str]:
-        return [world for world in self.waypoint_list.keys()]
+
+        worlds_with_created_wps = list(self.waypoint_list.keys())
+        worlds_singleplayer = os.listdir(os.path.join(
+            os.getenv('APPDATA'),
+            '.minecraft',
+            'saves'
+        ))
+        worlds_multiplayer_file = FileHandler(
+            extension=MinecraftDatFile,
+            full_path=os.path.join(
+                os.getenv('APPDATA'),
+                '.minecraft',
+                'servers.dat'
+            )
+        )
+        worlds_multiplayer = []
+
+        for server in worlds_multiplayer_file.read()['servers']:
+            worlds_multiplayer.append(f'{server['name']} (ip: {server['ip']})')
+
+        return worlds_with_created_wps + worlds_singleplayer + worlds_multiplayer
+
     
 
     def _get_world_waypoints(self, world_name: str) -> dict:
@@ -174,7 +196,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
 
     def _choose_server(self, server_paths: list[str]) -> str:
 
-        print_script_message('Multiple servers were found that include the given name.')
+        print_script_message('(Lunar Client): Multiple worlds were found that include the given text.')
         print_script_message('Please select the number of the desired server.')
 
         server_choice : int = select_list_options(server_paths)
@@ -302,7 +324,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         return
 
 
-    def create_backup(self, world_name : str) -> None:
+    def create_backup(self, world_name : str) -> bool:
         data : dict = self.read_full_waypoint_file()
         backup_file = FileHandler.exact_path(
             full_path=Path(
@@ -319,8 +341,9 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
 
         if not backup_file.write(data=data):
             print_script_message('Error creating Lunar Client backup file.')
+            return False
 
-        return
+        return True
 
 
 

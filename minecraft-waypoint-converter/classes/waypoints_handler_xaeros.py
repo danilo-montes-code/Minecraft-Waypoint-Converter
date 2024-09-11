@@ -8,6 +8,7 @@ Xaero's Minimap mod.
 
 from .file_handler import FileHandler
 from .file_txt import TxtFile
+from .file_dat_minecraft import MinecraftDatFile
 from .waypoints_directory_mod_handler import DirectoryWaypointsModHandler
 from .useful_methods import (print_script_message, 
                              select_list_options,
@@ -116,10 +117,30 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         return self._get_specific_world_name(search_name=search_name)
 
 
+    # TODO create dict and tuples of sp/mp worlds
     def _get_worlds(self) -> list[str]:
-    
-        return [dir_name for dir_name in os.listdir(self.base_directory_path)]
 
+        worlds_with_created_wps = os.listdir(self.base_directory_path)
+        worlds_singleplayer = os.listdir(os.path.join(
+            os.getenv('APPDATA'),
+            '.minecraft',
+            'saves'
+        ))
+        worlds_multiplayer_file = FileHandler(
+            extension=MinecraftDatFile,
+            full_path=os.path.join(
+                os.getenv('APPDATA'),
+                '.minecraft',
+                'servers.dat'
+            )
+        )
+        worlds_multiplayer = []
+
+        for server in worlds_multiplayer_file.read()['servers']:
+            worlds_multiplayer.append(f'{server['name']} (ip: {server['ip']})')
+
+        return worlds_with_created_wps + worlds_singleplayer + worlds_multiplayer
+    
 
     def _get_world_waypoints(self, world_name : str) -> dict:
 
@@ -256,6 +277,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         return self._choose_server(matching_servers)
 
 
+    # TODO search tuples
     def _get_matching_servers(self, search_name : str) -> list[str]:
 
         return list(
@@ -268,7 +290,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
 
     def _choose_server(self, server_paths : list[str]) -> str:
         
-        print_script_message('Multiple servers were found that include the given name.')
+        print_script_message('(Xaero\'s): Multiple worlds were found that include the given text.')
         print_script_message('Please select the number of the desired server.')
 
         server_choice : int = select_list_options(server_paths)
@@ -421,7 +443,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         return
 
 
-    def create_backup(self, world_name : str) -> None:
+    def create_backup(self, world_name : str) -> bool:
 
         world_dir = self._get_world_directory(world_name=world_name)
 
@@ -456,8 +478,9 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
 
             if not backup_file.write(data = waypoint_file_data):
                 print_script_message('Error creating Xaero\'s Minimap backup file.')
+                return False
 
-        return
+        return True
 
 
 

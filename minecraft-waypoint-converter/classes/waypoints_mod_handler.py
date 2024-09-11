@@ -30,7 +30,7 @@ class WaypointsModHandler(ABC):
         Creates an instance of a WaypointsModHandler subclass.
         """
         self.waypoint_list = {}
-        self.datetime = datetime.now()
+        self.now = datetime.now()
 
 
 
@@ -292,7 +292,7 @@ class WaypointsModHandler(ABC):
 
 
     @abstractmethod
-    def create_backup(self, world_name : str) -> None:
+    def create_backup(self, world_name : str) -> bool:
         """
         Creates a backup of the waypoint data and stores it in
         `minecraft-waypoint-converter/data/backups`
@@ -301,6 +301,12 @@ class WaypointsModHandler(ABC):
         ----------
         world_name : str
             the name of the world to save a backup of
+
+        Returns
+        -------
+        bool
+            True,   if the backup creation was successful
+            False,  otherwise
         """
 
 
@@ -315,4 +321,4 @@ class WaypointsModHandler(ABC):
         human readable string with relevant information.
         """
 
-        return self.datetime.strftime("%Y/%m/%d-%H:%M:%S")
+        return self.now.strftime("%Y.%m.%d-%H.%M.%S")

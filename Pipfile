@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 "ruamel.yaml" = "*"
 argparse = "*"
+amulet-nbt = "*"
 
 [dev-packages]
 
