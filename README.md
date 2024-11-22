@@ -20,19 +20,22 @@ Converts waypoints between various Minecraft waypoint mods. Given a mod to impor
 
 5. Type the command `cd`, hit space, paste the path you just copied, and hit enter
 
-6. Type the command `pipenv shell`
+6. Type the command `pipenv install`
 
-7. Type the command `py minecraft-waypoint-converter\convert-waypoints.py` (you can hit shift while typing to autofill)
+7. Type the command `pipenv shell`
+
+8. Type the command `py minecraft-waypoint-converter\convert-waypoints.py` (you can hit shift while typing to autofill)
     * For Unix-based systems, use `py minecraft-waypoint-converter/convert-waypoints.py`
 
-8. You are now running the script!
+9. You are now running the script!
 
 
 # Usage
 Once executing the run command, as described in step 7 above, the script will begin. Answer the questions as they appear.
 
 `> What is the name of the singleplayer world or multiplayer server IP? (Only part of the name is necessary, ex. "best" will find "best world"):` \
-Here, enter part of or the entire server name. Entering "my" will find worlds or servers like "my world", "friendsandmyserver.serverminer.com", and "crummycat.aternos.me". NOTE: in v1 of this script, you MUST have already created waypoints at least once before for the world/server. This is so that the files for those worlds can be created. This is set to change in the next version.
+Here, enter part of or the entire server name. Entering "my" will find worlds or servers like "my world", "friendsandmyserver.serverminer.com", and "crummycat.aternos.me". 
+NOTE: in v1 of this script, you MUST have already created waypoints at least once before for the world/server. This is so that the files for those worlds can be created. This is set to change in the next version.
 
 `> Select the mod to convert from:` \
 Here, choose the mod that you want to export waypoints from.

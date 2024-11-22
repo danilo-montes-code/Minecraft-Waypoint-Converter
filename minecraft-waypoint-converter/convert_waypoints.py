@@ -331,7 +331,7 @@ def setup_classes(convert_here : bool) -> None:
         )
 
 
-def main() -> None: 
+def main() -> None:
     
     os.system('cls' if os.name == 'nt' else 'clear')
     
@@ -372,5 +372,5 @@ def testing():
 
 if __name__ == "__main__":
 
-    # testing()
-    main()
+    testing()
+    # main()
