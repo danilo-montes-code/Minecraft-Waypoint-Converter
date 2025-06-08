@@ -363,7 +363,7 @@ def testing():
 
     data = servers_file.read()
 
-    for server in data['servers']:
+    for server in data.tag['servers']:
         print(f'{server['name']} (ip: {server['ip']})')
 
     exit()

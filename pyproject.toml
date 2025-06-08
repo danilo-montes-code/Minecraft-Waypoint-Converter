@@ -1,0 +1,16 @@
+[project]
+name = "minecraft-waypoint-converter"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "amulet-nbt>=2.1.5",
+    "argparse>=1.4.0",
+    "pyfilehandlers>=1.0.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.0",
+]
