@@ -4,23 +4,17 @@ Minecraft Waypoint Converter
 Converts Minecraft waypoints between various mods. 
 
 Dependencies:
-* ruamel.yaml
+* pyfilehandlers
 * amulet_nbt
 * argparse
 """
 
-
-
-from classes import *
-from classes.waypoints_mod_handler import WaypointsModHandler
-from classes.file_dat_minecraft import MinecraftDatFile
-
-import argparse
-
 import os
 from pathlib import Path
 
+import argparse
 
+from waypoint_handlers.waypoints_mod_handler import WaypointsModHandler
 
 
 ########################################################################
