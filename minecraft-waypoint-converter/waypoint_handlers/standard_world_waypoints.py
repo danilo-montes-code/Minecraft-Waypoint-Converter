@@ -6,14 +6,14 @@ a standardized format.
 
 
 
-from .file_handler import FileHandler
-from .file_yaml import YAMLFile
-
 import os
 
+from pyfilehandlers.file_handler import FileHandler
 
 
-class StandardWorldWaypoints():
+
+
+class StandardWorldWaypoints:
     """
     A class that handles reading and writing waypoints to and from
     a standardized format. The data is for a single world/server, and

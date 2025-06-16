@@ -1,4 +1,4 @@
-"""waypoints_mod_handler.py
+"""waypoint_mod_handler.py
 
 Contains a class that handles reading and writing waypoints to and from
 a waypoint mod.
@@ -11,7 +11,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 
 
-class WaypointsModHandler(ABC):
+class WaypointModHandler(ABC):
     """
     A class that handles reading and writing waypoints to and from
     a waypoint mod.
@@ -19,18 +19,20 @@ class WaypointsModHandler(ABC):
     Attributes
     ----------
     waypoint_list : dict
-        the list of all the waypoints in all the worlds/servers
-        that the mod has created waypoints for
-    datetime : datetime.datetime
-        the date and time that the instance is created
+        The list of all the waypoints in all the worlds/servers
+        that the mod has created waypoints for. dict formatted in the
+        standard waypoint save format used in `StandardWorldWaypoints`.
+
+    time_created : datetime.datetime
+        The date and time that the instance is created.
     """
 
     def __init__(self) -> None: 
         """
-        Creates an instance of a WaypointsModHandler subclass.
+        Creates an instance of a WaypointModHandler subclass.
         """
         self.waypoint_list = {}
-        self.now = datetime.now()
+        self.time_created = datetime.now()
 
 
 
@@ -321,4 +323,4 @@ class WaypointsModHandler(ABC):
         human readable string with relevant information.
         """
 
-        return self.now.strftime("%Y.%m.%d-%H.%M.%S")
+        return self.time_created.strftime("%Y.%m.%d-%H.%M.%S")

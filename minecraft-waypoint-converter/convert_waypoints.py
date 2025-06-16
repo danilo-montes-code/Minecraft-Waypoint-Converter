@@ -5,6 +5,7 @@ Converts Minecraft waypoints between various mods.
 
 Dependencies:
 * pyfilehandlers
+* lunapyutils
 * amulet_nbt
 * argparse
 """
@@ -13,8 +14,14 @@ import os
 from pathlib import Path
 
 import argparse
+from lunapyutils import (
+    prompt_for_answer,
+    print_script_message,
+    select_list_options
+)
 
 from waypoint_handlers.waypoints_mod_handler import WaypointsModHandler
+
 
 
 ########################################################################
