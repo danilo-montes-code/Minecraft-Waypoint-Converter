@@ -1,54 +1,59 @@
-"""waypoints_file_mod_handler.py
+"""waypoint_file_mod_handler.py
 
 Contains a class that handles reading and writing waypoints to and from
 a waypoint mod that stores all waypoints in a single file.
 Class is written as an abstract class.
 """
 
-
-
-from .file_handler import FileHandler
-from .file_extension import FileExtension
-from .waypoints_mod_handler import WaypointsModHandler
-
 from abc import abstractmethod
 from pathlib import Path
-import os
+
+from pyfilehandlers.file_handler import FileHandler
+
+from .waypoint_mod_handler import WaypointModHandler
 
 
 
-class FileWaypointsModHandler(WaypointsModHandler):
+class FileWaypointModHandler(WaypointModHandler):
     """
     A class that handles reading and writing waypoints to and from
     a waypoint mod that stores all waypoints in a single file.
 
+    
     Attributes
     ----------
-    waypoints_file : FileHandler
-        class that handles IO for the file in which the waypoints
-        are stored
+    input_waypoint_file : FileHandler
+        Class that handles IO for the file in which the waypoints
+        are stored, to be used as input to the converter.
+
+    output_waypoint_file : FileHandler
+        Class that handles IO for the file in which the waypoints
+        are stored, to be used as output from the converter.
     """
 
-    def __init__(self,
-                 file_path : str,
-                 extension : FileExtension) -> None:
+    def __init__(
+        self,
+        input_file_path : Path,
+        output_file_path : Path
+    ) -> None:
         """
-        Creates an instance of a FileWaypointsModHandler subclass.
+        Initializes a FileWaypointModHandler instance.
 
+        
         Parameters
         ----------
-        file_path : str
-            the full path of the waypoints file
-        extension : FileExtension
-            the extension of said file
+        input_file_path : pathlib.Path
+            The full path of the waypoint file to be used as 
+            input to the converter.
+
+        output_file_path : pathlib.Path
+            The full path of the waypoint file to be used as 
+            output from the converter.
         """
 
-        self.waypoints_file = FileHandler.exact_path(
-            full_path=file_path, 
-            extension=extension
-        )
         super().__init__()
-
+        self.input_waypoint_file = FileHandler(input_file_path)
+        self.output_waypoint_file = FileHandler(output_file_path)
 
 
     @abstractmethod
@@ -56,10 +61,11 @@ class FileWaypointsModHandler(WaypointsModHandler):
         """
         Reads and returns the data held within the waypoints file.
 
+        
         Returns
         -------
         dict
-            the data held within the file
+            The data held within the file.
         """
         
 
@@ -69,32 +75,3 @@ class FileWaypointsModHandler(WaypointsModHandler):
         Writes to the data held within the waypoints file.
         """
     
-    
-    @abstractmethod
-    def change_path(self, new_path : str) -> None:
-        """
-        Changes the path to the file where waypoints are stored.
-
-        Parameters
-        ----------
-        new_path : str
-            the path to the file where all waypoints are stored
-        """
-
-
-    def convert_here(self) -> None:
-        """
-        Changes the path to the file to the predefined
-        `minecraft-waypoint-converter/data/convert/waypoints.json`
-        """
-
-        self.change_path(
-            new_path=Path(
-                os.path.join(
-                    os.getcwd(),
-                    'minecraft-waypoint-converter',
-                    'data',
-                    'convert-here'
-                )
-            )
-        )

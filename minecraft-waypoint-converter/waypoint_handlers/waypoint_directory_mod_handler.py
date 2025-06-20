@@ -1,51 +1,65 @@
-"""waypoints_directory_mod_handler.py
+"""waypoint_directory_mod_handler.py
 
 Contains a class that handles reading and writing waypoints to and from
 a waypoint mod that stores all waypoints in multiple directories.
 Class is written as an abstract class.
 """
 
-
-
-from .file_extension import FileExtension
-from .waypoints_mod_handler import WaypointsModHandler
-
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from pathlib import Path
-import os
+
+from .waypoint_mod_handler import WaypointModHandler
 
 
 
-class DirectoryWaypointsModHandler(WaypointsModHandler):
+class DirectoryWaypointModHandler(WaypointModHandler, ABC):
     """
     A class that handles reading and writing waypoints to and from
-    a waypoint mod that stores all waypoints in multiple directories.
+    a waypoint mod that stores its waypoints in multiple directories.
 
+    
     Attributes
     ----------
-    base_directory_path : str
-        the path to the directory where all waypoints are stored
-    extension_of_files : FileExtension
-        the extension that all files share
+    input_directory_path : pathlib.Path
+        The path to the directory where waypoints are stored, to be used as
+        input to the converter.
+
+    output_directory_path : pathlib.Path
+        The path to the directory where waypoints are stored, to be used as
+        output from the converter.
+
+    extension_of_files : str
+        The extension that all files share.
     """
 
-    def __init__(self,
-                 base_directory_path : str,
-                 extension_of_files : FileExtension) -> None:
+    def __init__(
+        self,
+        input_directory_path : Path,
+        output_directory_path : Path,
+        extension_of_files : str
+    ) -> None:
         """
-        Creates an instance of a DirectoryWaypointsModHandler subclass.
+        Initializes a DirectoryWaypointModHandler instance.
 
+        
         Parameters
         ----------
-        base_directory_path : str
-            the path to the directory where all waypoints are stored
-        extension_of_files : FileExtension
-            the extension that all files share
+        input_directory_path : pathlib.Path
+            The path to the directory where waypoints are stored, to be used as
+            input to the converter.
+
+        output_directory_path : pathlib.Path
+            The path to the directory where waypoints are stored, to be used as
+            output from the converter.
+
+        extension_of_files : str
+            The extension that all files share.
         """
         
-        self.base_directory_path = base_directory_path
-        self.extension_of_files = extension_of_files
         super().__init__()
+        self.input_directory_path = input_directory_path
+        self.output_directory_path = output_directory_path
+        self.extension_of_files = extension_of_files
 
 
     @abstractmethod
@@ -53,39 +67,15 @@ class DirectoryWaypointsModHandler(WaypointsModHandler):
         """
         Gets the path of the directory that holds all world waypoints.
 
+
         Parameters
         ----------
         world_name : str
-            the name of the world to get the directory from
+            The name of the world to get the directory from.
 
+            
         Returns
         -------
         str
-            the path of the directory
+            The path of the directory.
         """
-
-
-    @abstractmethod
-    def change_base_dir(self, new_base_dir_path : str) -> None:
-        """
-        Changes the base directory path where waypoints are stored.
-
-        Parameters
-        ----------
-        new_base_dir_path : str
-            the path to the new directory where all waypoints are stored
-        """
-    
-    
-    def convert_here(self) -> None:
-
-        self.change_base_dir(
-            new_base_dir_path=Path(
-                os.path.join(
-                    os.getcwd(),
-                    'minecraft-waypoint-converter',
-                    'data',
-                    'convert-here'
-                )
-            )
-        )

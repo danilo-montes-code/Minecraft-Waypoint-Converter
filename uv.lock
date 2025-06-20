@@ -41,11 +41,11 @@ wheels = [
 
 [[package]]
 name = "lunapyutils"
-version = "0.0.2"
+version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/4c/81/7a10a765e23f6933b9d90967db224bf396f6022b1f6ef3b914f226559482/lunapyutils-0.0.2.tar.gz", hash = "sha256:fd2899d3116c7f8351e9c67dca7e5479d5bdd45800dade979efc3b7278d01559", size = 4203, upload-time = "2025-06-08T14:22:47.172Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5a/6d/8a36cfcdeba9ce6eb18de09764829d6977f4c36e65463a3b8e119a9e358b/lunapyutils-1.0.0.tar.gz", hash = "sha256:d799681ac57ca33431321aa987f3d0657d4155d5842a03ae5fd9411d51a7f8f3", size = 4641, upload-time = "2025-06-18T18:43:45.825Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/44/2b/f661899263b39cc492131ac109689716e821d3561229baee8f55f34f766f/lunapyutils-0.0.2-py3-none-any.whl", hash = "sha256:5eff31236c3e917181f19d0c4aaf7140084a0d730ea088590fa501c66a540762", size = 3280, upload-time = "2025-06-08T14:22:45.405Z" },
+    { url = "https://files.pythonhosted.org/packages/35/fd/88467496ece7f1e07224a83379ad2df52386fbb790c77558d173c1d4d26a/lunapyutils-1.0.0-py3-none-any.whl", hash = "sha256:1a63e16d648766131e641c306c91df8e542bca5ba012202b8de8f03607c1e3af", size = 3672, upload-time = "2025-06-18T18:43:44.815Z" },
 ]
 
 [[package]]
@@ -105,16 +105,16 @@ wheels = [
 
 [[package]]
 name = "pyfilehandlers"
-version = "1.0.3"
+version = "1.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "amulet-nbt" },
     { name = "lunapyutils" },
     { name = "ruamel-yaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e7/6c/3a7f6390693de2ba09116c69cfe78a5a724f45cc47821ed7bc074e05bd03/pyfilehandlers-1.0.3.tar.gz", hash = "sha256:2b0c05877c6aa0ac958e6c6f781e27c37f256d26cd48261508a137c49ea8f029", size = 178351, upload-time = "2025-06-08T15:03:41.273Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fd/a8/d8e283137899e81939694b47310b0fa15d114e60fc28b9d03dd3cc56cbdf/pyfilehandlers-1.1.1.tar.gz", hash = "sha256:44e013d2f6cf94b9529ff773045e72f4ab05879a462f83809228ed1f4f46b87c", size = 178468, upload-time = "2025-06-18T20:49:46.201Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/15/af/fe5a52ca745153c4bfb8a53f0408e693f7ff55f4e908a3809c5430555b02/pyfilehandlers-1.0.3-py3-none-any.whl", hash = "sha256:30ea6ac327e9d390b32eeff1a60f00d12432f8178537eec24cd4364e4b4e371c", size = 9048, upload-time = "2025-06-08T15:03:40.026Z" },
+    { url = "https://files.pythonhosted.org/packages/54/44/77b998239c1f61aca843b2517373a271c6f1c4c5ee9fa009cb305cd763c9/pyfilehandlers-1.1.1-py3-none-any.whl", hash = "sha256:a6913c1320da87afb9a31cd906001206cedfc6cec21ec51323f4cd68675d7508", size = 9155, upload-time = "2025-06-18T20:49:45.408Z" },
 ]
 
 [[package]]
@@ -128,7 +128,7 @@ wheels = [
 
 [[package]]
 name = "pytest"
-version = "8.4.0"
+version = "8.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
@@ -137,21 +137,21 @@ dependencies = [
     { name = "pluggy" },
     { name = "pygments" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fb/aa/405082ce2749be5398045152251ac69c0f3578c7077efc53431303af97ce/pytest-8.4.0.tar.gz", hash = "sha256:14d920b48472ea0dbf68e45b96cd1ffda4705f33307dcc86c676c1b5104838a6", size = 1515232, upload-time = "2025-06-02T17:36:30.03Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/08/ba/45911d754e8eba3d5a841a5ce61a65a685ff1798421ac054f85aa8747dfb/pytest-8.4.1.tar.gz", hash = "sha256:7c67fd69174877359ed9371ec3af8a3d2b04741818c51e5e99cc1742251fa93c", size = 1517714, upload-time = "2025-06-18T05:48:06.109Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2f/de/afa024cbe022b1b318a3d224125aa24939e99b4ff6f22e0ba639a2eaee47/pytest-8.4.0-py3-none-any.whl", hash = "sha256:f40f825768ad76c0977cbacdf1fd37c6f7a468e460ea6a0636078f8972d4517e", size = 363797, upload-time = "2025-06-02T17:36:27.859Z" },
+    { url = "https://files.pythonhosted.org/packages/29/16/c8a903f4c4dffe7a12843191437d7cd8e32751d5de349d45d3fe69544e87/pytest-8.4.1-py3-none-any.whl", hash = "sha256:539c70ba6fcead8e78eebbf1115e8b589e7565830d7d006a8723f19ac8a0afb7", size = 365474, upload-time = "2025-06-18T05:48:03.955Z" },
 ]
 
 [[package]]
 name = "ruamel-yaml"
-version = "0.18.13"
+version = "0.18.14"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ruamel-yaml-clib", marker = "python_full_version < '3.14' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/aa/f9/0e3b3a678d087f8067249ecc9f2434428a93442004be86faed201ac7aeee/ruamel.yaml-0.18.13.tar.gz", hash = "sha256:b0d5ac0a2b0b4e39d87aed00ddff26e795de6750b064da364a8d009b97ce5f26", size = 145469, upload-time = "2025-06-06T14:22:43.83Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/39/87/6da0df742a4684263261c253f00edd5829e6aca970fff69e75028cccc547/ruamel.yaml-0.18.14.tar.gz", hash = "sha256:7227b76aaec364df15936730efbf7d72b30c0b79b1d578bbb8e3dcb2d81f52b7", size = 145511, upload-time = "2025-06-09T08:51:09.828Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a3/ce/409888a3f8421600d778f926768ee1353cfe61b4850bef3622701bd82dad/ruamel.yaml-0.18.13-py3-none-any.whl", hash = "sha256:cf9628cfdfe9d88b78429cd093aa766e9a4c69242f9f3c86ac1d9e56437e5572", size = 118588, upload-time = "2025-06-06T14:22:40.787Z" },
+    { url = "https://files.pythonhosted.org/packages/af/6d/6fe4805235e193aad4aaf979160dd1f3c487c57d48b810c816e6e842171b/ruamel.yaml-0.18.14-py3-none-any.whl", hash = "sha256:710ff198bb53da66718c7db27eec4fbcc9aa6ca7204e4c1df2f282b6fe5eb6b2", size = 118570, upload-time = "2025-06-09T08:51:06.348Z" },
 ]
 
 [[package]]

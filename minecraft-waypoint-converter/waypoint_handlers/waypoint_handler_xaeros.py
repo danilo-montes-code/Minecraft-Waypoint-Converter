@@ -1,44 +1,49 @@
-"""waypoints_handler_xaeros.py
+"""waypoint_handler_xaeros.py
 
 Contains a class that handles reading and writing waypoints to and from
-Xaero's Minimap mod.
+the mod Xaero's Minimap.
 """
 
-
-
-from .file_handler import FileHandler
-from .file_txt import TxtFile
-from .file_dat_minecraft import MinecraftDatFile
-from .waypoints_directory_mod_handler import DirectoryWaypointsModHandler
-from .useful_methods import (print_script_message, 
-                             select_list_options,
-                             merge_dicts)
-
 from pathlib import Path
-from datetime import date
 import os
 
+from pyfilehandlers.file_handler import FileHandler
+from pyfilehandlers.file_txt import TxtFile
+from pyfilehandlers.file_minecraft_dat import MinecraftDatFile
+from lunapyutils import (
+    print_script_message, 
+    select_list_options,
+    merge_dicts
+)
+
+from .waypoint_directory_mod_handler import DirectoryWaypointModHandler
 
 
-class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
+from typing import override
+
+
+class XaerosWaypointHandler(DirectoryWaypointModHandler):
     """
     A class that that handles reading and writing waypoints to and from
-    Xaero's Minimap mod.
+    the mod Xaero's Minimap.
 
-    Xaero's Minimap stores all waypoints in a directory. Within this
-    directory, there are subdirectories, each for an individual
-    world/server. Within these folders are the waypoints for each 
-    individual world/server. This folder has separate folders for each 
-    dimension, labeled `dim%<DIMENSION_INT>`. Each dimension folder
-    has a single file, `mw$default_1.txt` that holds the waypoint data.
+    Xaero's Minimap stores all waypoints in a directory, defaulted to
+    `%APPDATA%/.minecraft/xaero/minimap`. Within this directory, 
+    there are subdirectories, one for each individual world/server. 
+    A world/server directory contains up to three directories, named
+    `dim%0`, `dim%-1`, and `dim%1`, for the Overworld, Nether, and End
+    respectively. Each of these dimension directories contains a file named
+    `mw$default_1.txt`, which contains the waypoints for that dimension.
 
-    Xaero's supports creating waypoint groups. If a group is created,
-    the list of groups will be the first line, separated by :, 
-    followed by the header comments to indicate the waypoint format. 
+    Xaero's Minimap also supports creating waypoint groups. 
+    If a group is created, the first line of the file will be a line starting
+    with "set", and the names of each group will follow, each separated by ":".
+    The next three lines will be header comments, starting with "#",
+    indicating the format of the waypoints in the file. 
     The format of waypoint storage in the text file is as follows 
-    (header line is consistent, so example data is shown underneath 
-    the header lines):
+    (example data is shown underneath the header lines):
 
+    ```
     sets:gui.xaero_default:02 Homes:01 Portals:20 Ocean Monuments:10 Caves:21 Pillager Outposts:30 Ancient Cities:04 Biomes
     #
     #waypoint:name:initials:x:y:z:color:disabled:type:set:rotate_on_tp:tp_yaw:visibility_type:destination
@@ -55,29 +60,45 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
     waypoint:Frozen Ocean I:F:2950:63:3151:8:false:0:04 Biomes:false:0:0:false
     waypoint:Dark Oak I:D:-1296:79:5025:2:false:0:04 Biomes:false:0:0:false
     waypoint:village home:V:-381:68:1070:0:false:0:gui.xaero_default:false:0:0:false
+    ```
     """
 
-    def __init__(self,
-                 different_directory_path : str = None) -> None:
+    def __init__(
+        self,
+        input_directory_path : Path = None,
+        output_directory_path : Path = None
+    ) -> None:
         """
-        Creates an instance of XaerosWaypointsHandler.
+        Initializes a XaerosWaypointHandler instance.
+        By default, the output directory is set to the same as the input directory.
 
+        
         Parameters
         ----------
-        different_file_path : str, optional
-            the path to the directory where Xaero's Minimap 
-            stores its waypoints
+        input_directory_path : pathlib.Path, optional
+            The path to the directory where waypoints are stored, to be used as
+            input to the converter.
+            If not provided, defaults to `%APPDATA%/.minecraft/xaero/minimap`.
+
+        output_directory_path : pathlib.Path, optional
+            The path to the directory where waypoints are stored, to be used as
+            output from the converter. If not provided, defaults to the same
+            as `input_directory_path`.
         """
 
-        dir_path = different_directory_path or os.path.join(
+        input_dir = input_directory_path or Path(
             os.getenv('APPDATA'),
             '.minecraft',
-            'XaeroWaypoints'
+            'xaero',
+            'minimap'
         )
 
+        output_dir = output_directory_path or input_dir
+
         super().__init__(
-            base_directory_path = dir_path, 
-            extension_of_files=TxtFile
+            input_directory_path = input_dir, 
+            output_directory_path = output_dir, 
+            extension_of_files='txt'
         )
 
 
@@ -86,6 +107,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
     #####              WaypointsModHandler Overrides               #####
     ####################################################################
 
+    @override
     def parse_world_name(world_name : str) -> str:
         # Xaero's world name format is:
         # just the name of the world for singleplayer
@@ -101,6 +123,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         return world_name
 
 
+    @override
     def get_world_type(world_name : str) -> str:
 
         if world_name.startswith('Multiplayer_'):
@@ -112,12 +135,14 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         return 'singleplayer'
 
 
+    @override
     def get_world_name(self, search_name : str) -> str | None:
         
         return self._get_specific_world_name(search_name=search_name)
 
 
     # TODO create dict and tuples of sp/mp worlds
+    @override
     def _get_worlds(self) -> list[str]:
 
         worlds_with_created_wps = os.listdir(self.base_directory_path)
@@ -142,6 +167,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         return worlds_with_created_wps + worlds_singleplayer + worlds_multiplayer
     
 
+    @override
     def _get_world_waypoints(self, world_name : str) -> dict:
 
         def get_dimension_name(dir_name : str) -> str:
@@ -261,6 +287,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         return waypoints
 
 
+    @override
     def _get_specific_world_name(self, search_name : str) -> str | None:
         
         matching_servers = self._get_matching_servers(search_name=search_name)
@@ -278,6 +305,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
 
 
     # TODO search tuples
+    @override
     def _get_matching_servers(self, search_name : str) -> list[str]:
 
         return list(
@@ -288,6 +316,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         )
 
 
+    @override
     def _choose_server(self, server_paths : list[str]) -> str:
         
         print_script_message('(Xaero\'s): Multiple worlds were found that include the given text.')
@@ -298,6 +327,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         return server_paths[server_choice - 1]
     
 
+    @override
     def convert_from_mod_to_standard(self, world_name : str) -> dict:
         
         standardized_dict = self._create_standardized_dict(world_name=world_name)
@@ -309,6 +339,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         return standardized_dict
 
 
+    @override
     def _create_standardized_dict(self, world_name : str) -> dict:
         
         world_waypoints = self._get_world_waypoints(world_name=world_name)
@@ -359,6 +390,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         ...
     }
     """
+    @override
     def convert_from_standard_to_mod(
         self, 
         standard_data : dict,
@@ -396,6 +428,7 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
                 )
 
 
+    @override
     def _add_waypoints_to_mod(self, 
                               world_name: str, 
                               waypoints: dict
@@ -438,11 +471,8 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
         return not error_in_write
 
 
-    def change_base_dir(self, new_base_dir_path : str) -> None:
-        self.base_directory_path = os.path.join(new_base_dir_path, 'xaero\'s minimap')
-        return
-
-
+ 
+    @override
     def create_backup(self, world_name : str) -> bool:
 
         world_dir = self._get_world_directory(world_name=world_name)
@@ -488,11 +518,12 @@ class XaerosWaypointsHandler(DirectoryWaypointsModHandler):
     #####          DirectoryWaypointsModHandler Overrides          #####
     ####################################################################
 
+    @override
     def _get_world_directory(self, world_name : str) -> str:
 
         return os.path.join(self.base_directory_path, world_name)
     
-
+    
 
     ####################################################################
     #####                       Other Methods                      #####

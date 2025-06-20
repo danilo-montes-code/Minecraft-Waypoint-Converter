@@ -4,77 +4,74 @@ Contains a class that handles reading and writing waypoints to and from
 a standardized format.
 """
 
-
-
-import os
+from pathlib import Path
 
 from pyfilehandlers.file_handler import FileHandler
-
 
 
 
 class StandardWorldWaypoints:
     """
     A class that handles reading and writing waypoints to and from
-    a standardized format. The data is for a single world/server, and
-    from a single mod.
+    a standardized format. The data is for a single world/server.
 
     The standard format includes only waypoint data that is common
     between all waypoint mods. The format is as follows:
 
-    {
-        'DIMENSION_NAME_1' : {
-            'WAYPOINT_NAME_1' : {
-                'coordinates' : {
-                    'x' : float,
-                    'y' : float,
-                    'z' : float
-                },
-                'color' : int,
-                'visible : bool
-            },
-            'WAYPOINT_NAME_2' : {
-                ...
-            }
-        },
-        'DIMENSION_NAME_2' : {
-            'WAYPOINT_NAME_3' : {
-                ...
-            },
-            'WAYPOINT_NAME_4' : {
-                ...
-            }
-        }
-    }
+    ```
+    DIMENSION_NAME_1:
+        WAYPOINT_NAME_1:
+            coordinates:
+                x: float
+                y: float
+                z: float
+            color: int,
+            visible: bool
+        WAYPOINT_NAME_2:
+            ...
+    DIMENSION_NAME_2:
+        WAYPOINT_NAME_3:
+            ...
+        WAYPOINT_NAME_4:
+            ...
+    ```
 
 
     Attributes
     ----------
     world_name : str
-        the name of the world/server
+        The name of the world/server.
+
     world_type : str
-        indication of what type of world the world is
+        Indication of what type of world the world is.
+
     waypoints_file : FileHandler
-        class to handle the file for this world's standardized waypoints
+        Class to handle the file for this world's standardized waypoints.
+
     mod_name : str
-        name of the mod whose standardized waypoints are held in the file
+        Name of the mod whose standardized waypoints are held in the file.
     """
 
-    def __init__(self,
-                 world_name : str,
-                 world_type : str,
-                 mod_name : str) -> None:
+    def __init__(
+        self,
+        world_name : str,
+        world_type : str,
+        mod_name : str
+    ) -> None:
         """
-        Creates an instance of a StandardWorldWaypoints subclass.
+        Initializes a StandardWorldWaypoints instance.
         
+
         Parameters
         ----------
         world_name : str
-            the name of the world/server
+            The name of the world/server.
+
         world_type : str
-            indication of what type of world the world is
+            Indication of what type of world the world is.
+
         mod_name : str
-            name of the mod whose standardized waypoints are held in the file
+            Name of the mod whose standardized waypoints are held in the file.
         """
 
         self.world_name : str = world_name
@@ -103,31 +100,28 @@ class StandardWorldWaypoints:
         #             'multiplayer'
         #         )
 
-        standardized_waypoints_file_path : str = os.path.join(
-            os.getcwd(), 'minecraft-waypoint-converter', 'data',
+        standardized_waypoints_file_path : Path = Path(
+            Path.cwd(), 
+            'data',
             world_type,
         )
 
-        self.waypoints_file = FileHandler.exact_path(
-            full_path=os.path.join(
-                standardized_waypoints_file_path,
-                f'{mod_name}_{world_name}.yaml'
-            ),
-            extension=YAMLFile
-        )
-
+        self.waypoints_file = FileHandler(Path(
+            standardized_waypoints_file_path,
+            f'{mod_name}_{world_name}.yaml'
+        ))
 
 
     def read_waypoints(self) -> dict:
         """
         Reads the waypoints from the file and returns the dict data.
 
+        
         Return
         ------
         dict
-            the waypoint data held in the file
+            The waypoint data held in the file.
         """
-        
         return self.waypoints_file.read()
 
 
@@ -136,16 +130,18 @@ class StandardWorldWaypoints:
         Writes the passed in waypoints to the file containing the
         standardized waypoint information.
 
+        
         Parameters
         ----------
         given_waypoints : dict
-            properly formatted waypoints to write to the file
+            Properly formatted waypoints to write to the file.
 
+        
         Return
         ------
         bool
-            True,   if the file was successfully written to,
-            False,  otherwise
+            True,   if the file was successfully written to.
+            False,  otherwise.
         """
 
         return self.waypoints_file.write(given_waypoints)

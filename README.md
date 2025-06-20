@@ -1,5 +1,5 @@
 # Minecraft Waypoint Converter
-Converts waypoints between various Minecraft waypoint mods. Given a mod to import from, and a mod to export to, waypoints from the former will be converted to the latter and added as new waypoints.
+Converts waypoints between various Minecraft waypoint mods. Given a mod to import from, and a mod to export to, waypoints from the former will be converted to the latter and added as new waypoints. Currently only works on Windows.
 
 
 

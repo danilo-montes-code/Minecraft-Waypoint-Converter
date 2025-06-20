@@ -9,7 +9,7 @@ Dependencies:
 * amulet_nbt
 * argparse
 """
-
+    
 import os
 from pathlib import Path
 
@@ -20,7 +20,7 @@ from lunapyutils import (
     select_list_options
 )
 
-from waypoint_handlers.waypoints_mod_handler import WaypointsModHandler
+from waypoint_handlers.waypoint_mod_handler import WaypointModHandler
 
 
 
@@ -28,7 +28,7 @@ from waypoint_handlers.waypoints_mod_handler import WaypointsModHandler
 #####                          Constants                           #####
 ########################################################################
 
-MOD_CLASSES : dict[str, WaypointsModHandler] = {
+MOD_CLASSES : dict[str, WaypointModHandler] = {
     'lunar client'      : None,
     'xaero\'s minimap'  : None
 }

@@ -1,31 +1,36 @@
-"""waypoints_handler_lunar.py
+"""waypoint_handler_lunar.py
 
 Contains a class that handles reading and writing waypoints to and from
-Lunar Client's waypoint mod.
+the Lunar Client waypoint mod.
 """
 
-
-from .waypoints_file_mod_handler import FileWaypointsModHandler
-from .file_json import JSONFile
-from .file_handler import FileHandler
-from .file_dat_minecraft import MinecraftDatFile
-from .useful_methods import (print_script_message, 
-                             select_list_options,
-                             merge_dicts)
-
-from typing import Any
 import os
 from pathlib import Path
 
+from pyfilehandlers.file_handler import FileHandler
+from pyfilehandlers.file_json import JSONFile
+from pyfilehandlers.file_minecraft_dat import MinecraftDatFile
+from lunapyutils import (
+    print_script_message, 
+    select_list_options,
+    merge_dicts
+)
+
+from .waypoint_file_mod_handler import FileWaypointModHandler
 
 
-class LunarWaypointsHandler(FileWaypointsModHandler):
+from typing import Any, override
+
+
+
+class LunarWaypointHandler(FileWaypointModHandler):
     """
     A class that handles reading and writing waypoints to and from
     Lunar Client's waypoint mod.
 
-    Lunar Client stores waypoints in the following format 
-    (all waypoints in single JSON file):
+    Lunar Client stores waypoints in a single file, defaulted to
+    `~/.lunarclient/settings/game/waypoints.json`. 
+    The file has the following format:
 
     {
         "version" : int,
@@ -59,59 +64,74 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         "sp:worldName" - singleplayer
         "mp:serverName" - multiplayer
 
-    dimension tag (same for xaeros)
+    dimension tag
         -1 - nether
         0  - overworld
         1  - end
 
     Lunar Client does NOT allow for duplicate waypoint names.
-
-    Attributes
-    ----------
-    waypoints_file : FileHandler
-        class that handles IO for the file in which Lunar Client stores
-        its waypoints
     """
 
-    def __init__(self,
-                 different_file_path : str = None) -> None:
+    def __init__(
+        self,
+        input_file_path : Path = None,
+        output_file_path : Path = None
+    ) -> None:
         """
-        Creates an instance of LunarWaypointsHandler.
+        Initializes a LunarWaypointHandler instance.
+        By default, the output file path is set to the same as the input file path.
 
+        
         Parameters
         ----------
-        different_file_path : str, optional
-            the path to the file where Lunar Client stores its waypoints
+        input_file_path : pathlib.Path, optional
+            The path to the file where waypoints are stored. If not provided, 
+            defaults to `~/.lunarclient/settings/game/waypoints.json`.
+        
+        output_file_path : pathlib.Path, optional
+            The full path of the waypoint file to be used as output 
+            from the converter. If not provided, defaults to the same as
+            `input_file_path`.
+
+
+        Raises
+        ------
+        FileNotFoundError
+            If the input file does not exist at the specified path.
         """
 
-        file_path = different_file_path or os.path.join(
-            Path.home(), 
+        input_file = input_file_path or Path(
+            Path.home(),
             '.lunarclient', 
             'settings', 
             'game',
             'waypoints.json'
         )
 
+        output_file = output_file_path or input_file_path
+
         super().__init__(
-            file_path = file_path, 
-            extension=JSONFile
+            input_file_path=input_file,
+            output_file_path=output_file
         )
 
         try:
             data : dict = self.read_full_waypoint_file()
             self.waypoint_list : dict = data['waypoints']
 
-        except TypeError:
-            # if the file is not found, do not create the waypoint list
-            print_script_message(f'No file found at {file_path}')
-            return None
-
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                'Error reading Lunar Client waypoint data - '
+                f'No file found at {input_file}'
+            )
+            
 
 
     ####################################################################
     #####              WaypointsModHandler Overrides               #####
     ####################################################################
 
+    @override
     def parse_world_name(world_name: str) -> str:
         # Lunar world name format is either
         # sp:WORLD_NAME
@@ -120,16 +140,19 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         return world_name[3:]
 
 
+    @override
     def get_world_type(world_name : str) -> str:
         # does not account for realms, since I am unaware of realms format
         return 'singleplayer' if world_name[:2] == 'sp' else 'multiplayer'
 
 
+    @override
     def get_world_name(self, search_name : str) -> str | None:
 
         return self._get_specific_world_name(search_name=search_name)
 
 
+    @override
     def _get_worlds(self) -> list[str]:
 
         worlds_with_created_wps = list(self.waypoint_list.keys())
@@ -153,8 +176,8 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
 
         return worlds_with_created_wps + worlds_singleplayer + worlds_multiplayer
 
-    
 
+    @override
     def _get_world_waypoints(self, world_name: str) -> dict:
 
         found_world = self._get_specific_world_name(search_name=world_name)
@@ -168,6 +191,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         return self.waypoint_list[found_world][""]
 
 
+    @override
     def _get_specific_world_name(self, search_name: str) -> str | None:
 
         matching_servers = self._get_matching_servers(search_name)
@@ -184,6 +208,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         return self._choose_server(matching_servers)
 
 
+    @override
     def _get_matching_servers(self, search_name: str) -> list[str]:
 
         return list(
@@ -194,6 +219,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         )
 
 
+    @override
     def _choose_server(self, server_paths: list[str]) -> str:
 
         print_script_message('(Lunar Client): Multiple worlds were found that include the given text.')
@@ -204,6 +230,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         return server_paths[server_choice - 1]
     
 
+    @override
     def convert_from_mod_to_standard(self, world_name: str) -> dict:
         
         standardized_dict = self._create_standardized_dict(world_name=world_name)
@@ -215,6 +242,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         return standardized_dict
     
 
+    @override
     def _create_standardized_dict(self, world_name: str) -> dict:
 
         world_waypoints = self._get_world_waypoints(world_name=world_name)
@@ -261,6 +289,7 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         return standardized_format
     
 
+    @override
     def convert_from_standard_to_mod(
             self, 
             standard_data : dict, 
@@ -291,7 +320,8 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
                     waypoints=combined_waypoints
                 )
 
-    
+
+    @override    
     def _add_waypoints_to_mod(
             self, 
             world_name: str, 
@@ -307,23 +337,15 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
         write_successful = self.write_to_full_waypoint_file(data=full_wp_data)
 
         if write_successful:
-            print_script_message(f'Waypoints written.')
+            print_script_message('Waypoints written.')
         else:
             error_in_write = True
-            print_script_message(f'Failure writing waypoints.')
+            print_script_message('Failure writing waypoints.')
 
         return not error_in_write
 
 
-    def change_path(self, new_path : str) -> None:
-        self.file_path = os.path.join(
-            new_path, 
-            'lunar client', 
-            'waypoints.json'
-        )
-        return
-
-
+    @override
     def create_backup(self, world_name : str) -> bool:
         data : dict = self.read_full_waypoint_file()
         backup_file = FileHandler.exact_path(
@@ -351,10 +373,12 @@ class LunarWaypointsHandler(FileWaypointsModHandler):
     #####            FileWaypointsModHandler Overrides             #####
     ####################################################################
 
+    @override
     def read_full_waypoint_file(self) -> dict:
         return self.waypoints_file.read()
     
 
+    @override
     def write_to_full_waypoint_file(self, data : Any) -> bool:
         return self.waypoints_file.write(data)
 
