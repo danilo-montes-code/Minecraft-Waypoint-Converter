@@ -19,14 +19,13 @@ from lunapyutils import (
     print_script_message,
     select_list_options
 )
+from pyfilehandlers.file_handler import FileHandler
 
 from waypoint_handlers.waypoint_mod_handler import WaypointModHandler
+from waypoint_handlers.waypoint_handler_lunar import LunarWaypointHandler
+from waypoint_handlers.waypoint_handler_xaeros import XaerosWaypointHandler
+from waypoint_handlers.standard_world_waypoints import StandardWorldWaypoints
 
-
-
-########################################################################
-#####                          Constants                           #####
-########################################################################
 
 MOD_CLASSES : dict[str, WaypointModHandler] = {
     'lunar client'      : None,
@@ -191,20 +190,20 @@ def get_world_info(mod_name : str, mod_world_name : str) -> tuple[str, bool]:
     match mod_name:
         
         case 'lunar client':
-            world_name = LunarWaypointsHandler.parse_world_name(mod_world_name)
-            world_type = LunarWaypointsHandler.get_world_type(mod_world_name)
+            world_name = LunarWaypointHandler.parse_world_name(mod_world_name)
+            world_type = LunarWaypointHandler.get_world_type(mod_world_name)
             
         case 'xaero\'s minimap':
-            world_name = XaerosWaypointsHandler.parse_world_name(mod_world_name)
-            world_type = XaerosWaypointsHandler.get_world_type(mod_world_name)
+            world_name = XaerosWaypointHandler.parse_world_name(mod_world_name)
+            world_type = XaerosWaypointHandler.get_world_type(mod_world_name)
 
     return world_name, world_type
 
 
 def create_backups(
-    from_mod_handler : WaypointsModHandler,
+    from_mod_handler : WaypointModHandler,
     from_mod_world_name : str,
-    to_mod_handler : WaypointsModHandler,
+    to_mod_handler : WaypointModHandler,
     to_mod_world_name : str
 ) -> bool:
     """
@@ -317,14 +316,14 @@ def setup_classes(convert_here : bool) -> None:
             'convert-here'
         )
 
-        MOD_CLASSES['lunar client'] = LunarWaypointsHandler(
+        MOD_CLASSES['lunar client'] = LunarWaypointHandler(
             different_file_path=os.path.join(
                 dir_path,
                 'lunar client',
                 'waypoints.json'
             )
         )
-        MOD_CLASSES['xaero\'s minimap'] = XaerosWaypointsHandler(
+        MOD_CLASSES['xaero\'s minimap'] = XaerosWaypointHandler(
             different_directory_path=os.path.join(
                 dir_path,
                 'xaero\'s minimap'
@@ -354,8 +353,8 @@ def main() -> None:
 
 def testing():
 
-    servers_file = MinecraftDatFile(
-        os.path.join(
+    servers_file = FileHandler(
+        Path(
             os.getenv('APPDATA'),
             '.minecraft',
             'servers.dat'
