@@ -1,16 +1,18 @@
 [project]
 name = "minecraft-waypoint-converter"
 version = "1.1.0"
-description = "Add your description here"
+description = "A tool to convert Minecraft waypoints between different mod formats."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "amulet-nbt>=2.1.5",
     "argparse>=1.4.0",
     "pyfilehandlers>=1.0.2",
+    "pyqt6>=6.9.1",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=8.4.0",
+    "pytest-qt>=4.4.0",
 ]
