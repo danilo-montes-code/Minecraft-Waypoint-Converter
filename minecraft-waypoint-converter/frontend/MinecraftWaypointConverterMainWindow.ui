@@ -6,18 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1212</width>
-    <height>693</height>
+    <width>1236</width>
+    <height>700</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>MinecraftWaypointConverter</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="layoutDirection">
     <enum>Qt::LayoutDirection::LeftToRight</enum>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_5">
     <item>
      <widget class="QLabel" name="McWCTitle">
       <property name="font">
@@ -35,40 +41,96 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="McWCTabButtons">
+     <widget class="QFrame" name="McWCTabButtonsSpacer">
       <property name="frameShape">
        <enum>QFrame::Shape::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Shadow::Raised</enum>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QPushButton" name="ModtoModTabButton">
-         <property name="text">
-          <string>Mod to Mod</string>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>400</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QFrame" name="McWCTabButtons">
+         <property name="frameShape">
+          <enum>QFrame::Shape::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout">
+          <item>
+           <widget class="QPushButton" name="ModtoModTabButton">
+            <property name="text">
+             <string>Mod to Mod</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="ModtoStdTabButton">
+            <property name="text">
+             <string>Mod to Standard Format</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="StdtoModTabButton">
+            <property name="text">
+             <string>Standard Format to Mod</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoRepeat">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="ModtoStdTabButton">
-         <property name="text">
-          <string>Mod to Standard Format</string>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="StdtoModTabButton">
-         <property name="text">
-          <string>Standard Format to Mod</string>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>400</width>
+           <height>20</height>
+          </size>
          </property>
-        </widget>
+        </spacer>
        </item>
       </layout>
      </widget>
     </item>
     <item>
      <widget class="QStackedWidget" name="McWCTabs">
+      <property name="frameShape">
+       <enum>QFrame::Shape::NoFrame</enum>
+      </property>
       <widget class="QWidget" name="ModtoModPage">
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
@@ -88,48 +150,78 @@
              <property name="frameShadow">
               <enum>QFrame::Shadow::Raised</enum>
              </property>
-             <layout class="QFormLayout" name="formLayout">
-              <item row="0" column="0">
-               <widget class="QLabel" name="SourceModLabel">
-                <property name="text">
-                 <string>Mod</string>
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <item>
+               <widget class="QLabel" name="SourceModTitle">
+                <property name="font">
+                 <font>
+                  <pointsize>18</pointsize>
+                 </font>
                 </property>
-                <property name="buddy">
-                 <cstring>SourceModComboBox</cstring>
+                <property name="layoutDirection">
+                 <enum>Qt::LayoutDirection::LeftToRight</enum>
+                </property>
+                <property name="text">
+                 <string>Source Mod</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignmentFlag::AlignCenter</set>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="SourceModComboBox">
-                <property name="sizeAdjustPolicy">
-                 <enum>QComboBox::SizeAdjustPolicy::AdjustToContentsOnFirstShow</enum>
+              <item>
+               <widget class="QFrame" name="SourceModOptionsFrame">
+                <property name="frameShape">
+                 <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
-                <property name="placeholderText">
-                 <string>Choose mod...</string>
+                <property name="frameShadow">
+                 <enum>QFrame::Shadow::Raised</enum>
                 </property>
-                <item>
-                 <property name="text">
-                  <string>Lunar Client</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Xaero's Minimap</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="SourceLocationComboBox"/>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="SourceLocationLabel">
-                <property name="text">
-                 <string>Location</string>
-                </property>
-                <property name="buddy">
-                 <cstring>SourceLocationComboBox</cstring>
-                </property>
+                <layout class="QFormLayout" name="formLayout">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="SourceModLabel">
+                   <property name="text">
+                    <string>Mod</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>SourceModComboBox</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QComboBox" name="SourceModComboBox">
+                   <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::SizeAdjustPolicy::AdjustToContentsOnFirstShow</enum>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Choose mod...</string>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Lunar Client</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Xaero's Minimap</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="SourceLocationLabel">
+                   <property name="text">
+                    <string>Location</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>SourceLocationComboBox</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QComboBox" name="SourceLocationComboBox"/>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>
@@ -143,36 +235,73 @@
              <property name="frameShadow">
               <enum>QFrame::Shadow::Raised</enum>
              </property>
-             <layout class="QFormLayout" name="formLayout_2">
-              <item row="0" column="0">
-               <widget class="QLabel" name="DestinationModLabel">
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item>
+               <widget class="QLabel" name="DestinationModTitle">
+                <property name="font">
+                 <font>
+                  <pointsize>18</pointsize>
+                 </font>
+                </property>
                 <property name="text">
-                 <string>Mod</string>
+                 <string>Destination Mod</string>
                 </property>
-                <property name="buddy">
-                 <cstring>DestinationModComboBox</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="DestinationModComboBox">
-                <property name="placeholderText">
-                 <string>Choose mod...</string>
+                <property name="alignment">
+                 <set>Qt::AlignmentFlag::AlignCenter</set>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="DestinationLocationLabel">
-                <property name="text">
-                 <string>Location</string>
+              <item>
+               <widget class="QFrame" name="DestinationModOptionsFrame">
+                <property name="frameShape">
+                 <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
-                <property name="buddy">
-                 <cstring>DestinationLocationComboBox</cstring>
+                <property name="frameShadow">
+                 <enum>QFrame::Shadow::Raised</enum>
                 </property>
+                <layout class="QFormLayout" name="formLayout_2">
+                 <item row="0" column="1">
+                  <widget class="QComboBox" name="DestinationModComboBox">
+                   <property name="placeholderText">
+                    <string>Choose mod...</string>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Lunar Client</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Xaero's Minimap</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="DestinationLocationLabel">
+                   <property name="text">
+                    <string>Location</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>DestinationLocationComboBox</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QComboBox" name="DestinationLocationComboBox"/>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="DestinationModLabel">
+                   <property name="text">
+                    <string>Mod</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>DestinationModComboBox</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="DestinationLocationComboBox"/>
               </item>
              </layout>
             </widget>
@@ -220,6 +349,17 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>SourceModComboBox</tabstop>
+  <tabstop>SourceLocationComboBox</tabstop>
+  <tabstop>DestinationModComboBox</tabstop>
+  <tabstop>DestinationLocationComboBox</tabstop>
+  <tabstop>ConvertButton</tabstop>
+  <tabstop>StdtoModTabButton</tabstop>
+  <tabstop>ModtoModTabButton</tabstop>
+  <tabstop>ModtoStdTabButton</tabstop>
+  <tabstop>ScriptOutputText</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -229,12 +369,12 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>207</x>
-     <y>189</y>
+     <x>298</x>
+     <y>270</y>
     </hint>
     <hint type="destinationlabel">
-     <x>258</x>
-     <y>225</y>
+     <x>349</x>
+     <y>300</y>
     </hint>
    </hints>
   </connection>
@@ -245,12 +385,12 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>730</x>
-     <y>196</y>
+     <x>999</x>
+     <y>257</y>
     </hint>
     <hint type="destinationlabel">
-     <x>760</x>
-     <y>229</y>
+     <x>999</x>
+     <y>300</y>
     </hint>
    </hints>
   </connection>
